@@ -9,13 +9,13 @@ export default function Header() {
   const { isAuthenticated, logout } = useAuth();
 
   const productCategories = [
-    { name: 'Stickers', icon: 'https://picsum.photos/seed/stk/40/40' },
-    { name: 'Labels', icon: 'https://picsum.photos/seed/lbl/40/40' },
-    { name: 'Magnets', icon: 'https://picsum.photos/seed/mag/40/40' },
-    { name: 'Buttons', icon: 'https://picsum.photos/seed/btn/40/40' },
-    { name: 'Packaging', icon: 'https://picsum.photos/seed/pkg/40/40' },
-    { name: 'Apparel', icon: 'https://picsum.photos/seed/app/40/40' },
-    { name: 'Acrylics', icon: 'https://picsum.photos/seed/acr/40/40' },
+    { name: 'Stickers', icon: 'https://i.ibb.co.com/CKJ76LNx/stickres.png' },
+    { name: 'Labels', icon: 'https://i.ibb.co.com/PvbtDxXf/labels.png' },
+    { name: 'Magnets', icon: 'https://i.ibb.co.com/LhvTv3dv/magnets.png' },
+    { name: 'Buttons', icon: 'https://i.ibb.co.com/JW7DWdJh/buttons.png' },
+    { name: 'Packaging', icon: 'https://i.ibb.co.com/FkxSdt7B/packaging.png' },
+    { name: 'Apparel', icon: 'https://i.ibb.co.com/wrjF6ynr/apparel.png' },
+    { name: 'Acrylics', icon: 'https://i.ibb.co.com/4ndRCLBY/acrylics.png' },
     { name: 'More products', icon: 'https://picsum.photos/seed/more/40/40' },
     { name: 'Samples', icon: 'https://picsum.photos/seed/sam/40/40' },
   ];
@@ -27,9 +27,7 @@ export default function Header() {
         <div className="flex items-center space-x-6">
           <Link to="/" className="flex items-center py-3">
             {/* Horse Logo Placeholder */}
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 mr-2">
-              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-            </svg>
+            <img className="max-w-[40px] hover:opacity-80" src="https://i.ibb.co.com/MxqJdQgy/horse.png" alt="horse" />
           </Link>
           <div className="hidden lg:flex items-center space-x-6 h-full">
             {/* Products Dropdown */}

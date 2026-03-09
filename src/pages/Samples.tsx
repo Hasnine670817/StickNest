@@ -5,17 +5,17 @@ export default function Samples() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const products = [
-    { name: 'Custom sticker samples', price: '10 for $9', image: 'https://picsum.photos/seed/s1/300/300' },
-    { name: 'Clear sticker samples', price: '10 for $9', image: 'https://picsum.photos/seed/s2/300/300' },
-    { name: 'Glitter sticker samples', price: '10 for $9', image: 'https://picsum.photos/seed/s3/300/300' },
-    { name: 'Holographic sticker samples', price: '10 for $9', image: 'https://picsum.photos/seed/s4/300/300' },
-    { name: 'Custom magnet samples', price: '10 for $9', image: 'https://picsum.photos/seed/s5/300/300' },
-    { name: 'Custom label samples', price: '10 for $9', image: 'https://picsum.photos/seed/s6/300/300' },
-    { name: 'Clear label samples', price: '10 for $9', image: 'https://picsum.photos/seed/s7/300/300' },
-    { name: 'Custom coaster samples', price: '10 for $9', image: 'https://picsum.photos/seed/s8/300/300' },
-    { name: 'Custom tape sample', price: '1 strip for $4', image: 'https://picsum.photos/seed/s9/300/300' },
-    { name: 'Custom poly mailer samples', price: '10 for $9', image: 'https://picsum.photos/seed/s10/300/300' },
-    { name: 'Custom bubble mailer samples', price: '10 for $9', image: 'https://picsum.photos/seed/s11/300/300' },
+    { name: 'Custom sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/BVqzHNZK/custom-sticker-samples.png' },
+    { name: 'Clear sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/gZdxnzHH/clear-sticker-samples.png' },
+    { name: 'Glitter sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/CpgCcQ12/glitter-sticker-samples.png' },
+    { name: 'Holographic sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/X0rM4C3/holographic-sticker-samples.png' },
+    { name: 'Custom magnet samples', price: '10 for $9', image: 'https://i.ibb.co.com/chHfMBmQ/magnet-samples.png' },
+    { name: 'Custom label samples', price: '10 for $9', image: 'https://i.ibb.co.com/qYnVFRmp/label-samples.png' },
+    { name: 'Clear label samples', price: '10 for $9', image: 'https://i.ibb.co.com/Gv9xVDP6/clear-label-samples.png' },
+    { name: 'Custom coaster samples', price: '10 for $9', image: 'https://i.ibb.co.com/k60qRLCz/coaster-samples.png' },
+    { name: 'Custom tape sample', price: '1 strip for $4', image: 'https://i.ibb.co.com/pvQgfznX/packaging-tape-sample.png' },
+    { name: 'Custom poly mailer samples', price: '10 for $9', image: 'https://i.ibb.co.com/0jdrgjrm/poly-mailer-samples.png' },
+    { name: 'Custom bubble mailer samples', price: '10 for $9', image: 'https://i.ibb.co.com/rRWpW2kd/bubble-mailer-samples.png' },
   ];
 
   const reviews = [
@@ -51,7 +51,7 @@ export default function Samples() {
           
           <div className="flex flex-wrap justify-center gap-x-4 md:gap-x-8 gap-y-12">
             {products.map((product, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center group cursor-pointer w-[100%] sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.5rem)] max-w-[280px]">
+              <div key={idx} className="flex flex-col items-center text-center group cursor-pointer w-[100%] sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.5rem)] max-w-[280px] rounded-xl hover:bg-[#E8E8E8] transition-all duration-300 py-4 px-4">
                 <div className="h-[180px] md:h-[200px] flex items-center justify-center mb-4 overflow-hidden w-full">
                   <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
                 </div>

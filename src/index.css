@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+@layer base {
+  button {
+    @apply cursor-pointer
+  }
+}

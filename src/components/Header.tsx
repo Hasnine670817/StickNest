@@ -9,15 +9,15 @@ export default function Header() {
   const { isAuthenticated, logout } = useAuth();
 
   const productCategories = [
-    { name: 'Stickers', icon: 'https://i.ibb.co.com/CKJ76LNx/stickres.png' },
-    { name: 'Labels', icon: 'https://i.ibb.co.com/PvbtDxXf/labels.png' },
-    { name: 'Magnets', icon: 'https://i.ibb.co.com/LhvTv3dv/magnets.png' },
-    { name: 'Buttons', icon: 'https://i.ibb.co.com/JW7DWdJh/buttons.png' },
-    { name: 'Packaging', icon: 'https://i.ibb.co.com/FkxSdt7B/packaging.png' },
-    { name: 'Apparel', icon: 'https://i.ibb.co.com/wrjF6ynr/apparel.png' },
-    { name: 'Acrylics', icon: 'https://i.ibb.co.com/4ndRCLBY/acrylics.png' },
-    { name: 'More products', icon: 'https://picsum.photos/seed/more/40/40' },
-    { name: 'Samples', icon: 'https://picsum.photos/seed/sam/40/40' },
+    { name: 'Stickers', icon: 'https://i.ibb.co.com/CKJ76LNx/stickres.png', path: '/stickers' },
+    { name: 'Labels', icon: 'https://i.ibb.co.com/PvbtDxXf/labels.png', path: '/labels' },
+    { name: 'Magnets', icon: 'https://i.ibb.co.com/LhvTv3dv/magnets.png', path: '/magnets' },
+    { name: 'Buttons', icon: 'https://i.ibb.co.com/JW7DWdJh/buttons.png', path: '/buttons' },
+    { name: 'Packaging', icon: 'https://i.ibb.co.com/FkxSdt7B/packaging.png', path: '/packaging' },
+    { name: 'Apparel', icon: 'https://i.ibb.co.com/wrjF6ynr/apparel.png', path: '/apparel' },
+    { name: 'Acrylics', icon: 'https://i.ibb.co.com/4ndRCLBY/acrylics.png', path: '/acrylics' },
+    { name: 'More products', icon: 'https://i.ibb.co.com/XrRXYqkj/more-products.png', path: '/more-products' },
+    { name: 'Samples', icon: 'https://i.ibb.co.com/fG06kTH5/samples.png', path: '/samples' },
   ];
 
   return (
@@ -45,10 +45,10 @@ export default function Header() {
                 
                 <div className="py-2 relative bg-white rounded-lg z-10">
                   {productCategories.map((cat, idx) => (
-                    <a key={idx} href="#" className="flex items-center px-5 py-2.5 hover:bg-gray-50 transition-colors">
+                    <Link key={idx} to={cat.path} className="flex items-center px-5 py-2.5 hover:bg-gray-50 transition-colors" onClick={() => setIsProductsOpen(false)}>
                       <img src={cat.icon} alt={cat.name} className="w-10 h-10 mr-4 object-contain drop-shadow-sm rounded-md" />
                       <span className="text-[16px] font-normal text-[#333333]">{cat.name}</span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -88,14 +88,14 @@ export default function Header() {
             </button>
             <div className={`mt-2 space-y-1 pl-4 transition-all duration-300 ${isProductsOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
               {productCategories.map((cat, idx) => (
-                <a key={idx} href="#" className="flex items-center py-2 text-gray-300 hover:text-white">
+                <Link key={idx} to={cat.path} className="flex items-center py-2 text-gray-300 hover:text-white" onClick={() => setIsMobileMenuOpen(false)}>
                   <img src={cat.icon} alt={cat.name} className="w-6 h-6 mr-3 object-contain rounded" />
                   <span className="text-[15px]">{cat.name}</span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
-          <a href="#" className="py-2 font-bold hover:text-gray-300">Samples</a>
+          <Link to="/samples" className="py-2 font-bold hover:text-gray-300" onClick={() => setIsMobileMenuOpen(false)}>Samples</Link>
           <a href="#" className="py-2 font-bold hover:text-gray-300">Marketplace</a>
           <a href="#" className="py-2 font-bold hover:text-gray-300">Deals</a>
           <a href="#" className="py-2 font-bold hover:text-gray-300">Get PRO</a>

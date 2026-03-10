@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   TrendingUp, 
   Users, 
@@ -41,6 +42,7 @@ const topProducts = [
 ];
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({
     totalSales: 0,
     totalOrders: 0,
@@ -48,6 +50,7 @@ export default function Dashboard() {
     pendingOrders: 0
   });
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<any[]>([]);
 
   useEffect(() => {
     fetch('/api/admin/stats')
@@ -59,20 +62,21 @@ export default function Dashboard() {
       .then(res => res.json())
       .then(data => setRecentOrders(data.slice(0, 5)))
       .catch(err => console.error(err));
+
+    fetch('/api/admin/chart-data')
+      .then(res => res.json())
+      .then(data => setChartData(data.map((d: any) => ({
+        name: new Date(2026, parseInt(d.month) - 1).toLocaleString('default', { month: 'short' }),
+        revenue: d.revenue
+      }))))
+      .catch(err => console.error(err));
   }, []);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
-        <div className="flex gap-2">
-          <button className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">
-            Download Report
-          </button>
-          <button className="px-4 py-2 bg-[#f37021] text-white rounded-lg text-sm font-medium hover:bg-[#e56a17]">
-            Create New Product
-          </button>
-        </div>
+        
       </div>
 
       {/* Stats Grid */}
@@ -113,7 +117,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Sales Chart */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+        <div className="lg:col-span-3 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-bold text-gray-900">Revenue Analytics</h2>
             <select className="bg-gray-50 border border-gray-200 text-sm rounded-lg px-3 py-1.5 outline-none">
@@ -124,7 +128,7 @@ export default function Dashboard() {
           </div>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data}>
+              <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#f37021" stopOpacity={0.1}/>
@@ -140,30 +144,6 @@ export default function Dashboard() {
                 <Area type="monotone" dataKey="revenue" stroke="#f37021" strokeWidth={2} fillOpacity={1} fill="url(#colorRevenue)" />
               </AreaChart>
             </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Top Products */}
-        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-lg font-bold text-gray-900">Top Products</h2>
-            <button className="text-[#f37021] text-sm font-medium hover:underline">View All</button>
-          </div>
-          <div className="space-y-4">
-            {topProducts.map((product) => (
-              <div key={product.name} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                <div className="flex items-center gap-3">
-                  <img src={product.image} alt={product.name} className="w-10 h-10 rounded-lg object-cover" />
-                  <div>
-                    <p className="text-sm font-semibold text-gray-900">{product.name}</p>
-                    <p className="text-xs text-gray-500">{product.sales} sales</p>
-                  </div>
-                </div>
-                <span className={`text-xs font-medium ${product.growth.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
-                  {product.growth}
-                </span>
-              </div>
-            ))}
           </div>
         </div>
       </div>

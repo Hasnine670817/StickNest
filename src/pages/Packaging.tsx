@@ -15,20 +15,13 @@ interface Product {
 
 export default function Packaging() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const packaging = products.filter(p => p.category === 'packaging' && p.is_active === 1);
 
   useEffect(() => {
     fetch('/api/products')
       .then(res => res.json())
-      .then(data => {
-        const filtered = data.filter((p: Product) => p.category === 'packaging' && p.is_active === 1);
-        setProducts(filtered);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
+      .then(data => setProducts(data))
+      .catch(err => console.error(err));
   }, []);
 
   const reviews = [
@@ -109,17 +102,13 @@ export default function Packaging() {
       {/* Grid Section */}
       <section className="bg-[#f4f4f4] py-16 px-4 sm:px-8">
         <div className="max-w-[1100px] mx-auto">
-          {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f37021]"></div>
-            </div>
-          ) : products.length > 0 ? (
+          {packaging.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-12">
-              {products.map((product) => (
+              {packaging.map((product) => (
                 <Link 
                   key={product.id} 
                   to={`/product/${product.name?.toLowerCase().replace(/\s+/g, '-') || 'product'}`} 
-                  state={{ image: product.image_url, name: product.name, price: product.price, description: product.description }}
+                  state={{ image: product.image_url, name: product.name, price: product.price }}
                   className="flex flex-col items-center text-center group cursor-pointer rounded-xl py-4 px-4 hover:bg-[#E8E8E8] transition-all duration-300"
                 >
                   <div className="w-full flex items-center justify-center mb-4">

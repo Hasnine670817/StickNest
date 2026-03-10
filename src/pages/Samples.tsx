@@ -1,25 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Play, Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image_url: string;
+  is_active: number;
+}
+
 export default function Samples() {
   const [isPlaying, setIsPlaying] = useState(false);
   const { addToCart } = useCart();
+  const [products, setProducts] = useState<Product[]>([]);
+  const samples = products.filter(p => p.category === 'samples' && p.is_active === 1);
 
-  const products = [
-    { name: 'Custom sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/BVqzHNZK/custom-sticker-samples.png' },
-    { name: 'Clear sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/gZdxnzHH/clear-sticker-samples.png' },
-    { name: 'Glitter sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/CpgCcQ12/glitter-sticker-samples.png' },
-    { name: 'Holographic sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/X0rM4C3/holographic-sticker-samples.png' },
-    { name: 'Custom magnet samples', price: '10 for $9', image: 'https://i.ibb.co.com/chHfMBmQ/magnet-samples.png' },
-    { name: 'Custom label samples', price: '10 for $9', image: 'https://i.ibb.co.com/qYnVFRmp/label-samples.png' },
-    { name: 'Clear label samples', price: '10 for $9', image: 'https://i.ibb.co.com/Gv9xVDP6/clear-label-samples.png' },
-    { name: 'Custom coaster samples', price: '10 for $9', image: 'https://i.ibb.co.com/k60qRLCz/coaster-samples.png' },
-    { name: 'Custom tape sample', price: '1 strip for $4', image: 'https://i.ibb.co.com/pvQgfznX/packaging-tape-sample.png' },
-    { name: 'Custom poly mailer samples', price: '10 for $9', image: 'https://i.ibb.co.com/0jdrgjrm/poly-mailer-samples.png' },
-    { name: 'Custom bubble mailer samples', price: '10 for $9', image: 'https://i.ibb.co.com/rRWpW2kd/bubble-mailer-samples.png' },
-  ];
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .catch(err => console.error(err));
+  }, []);
 
   const reviews = [
     { initials: 'SS', color: 'bg-[#e9d5ff] text-[#6b21a8]', title: 'Labels', author: 'Sharon Simpson', time: '18 hours ago', text: 'Sticker mule always provide professional customer service and perfect quality. Always willing to assist. My labels were perfect and the delivery time was superb and earlier than expected.' },
@@ -63,18 +68,18 @@ export default function Samples() {
           <h2 className="text-[24px] md:text-[32px] font-bold text-center text-[#333333] mb-12 md:mb-16">Or, get custom samples using your artwork.</h2>
           
           <div className="flex flex-wrap justify-center gap-x-4 md:gap-x-8 gap-y-12">
-            {products.map((product, idx) => (
+            {samples.map((product) => (
               <Link 
-                key={idx} 
+                key={product.id} 
                 to={`/product/${product.name?.toLowerCase().replace(/\s+/g, '-') || 'product'}`} 
-                state={{ image: product.image, name: product.name }}
+                state={{ image: product.image_url, name: product.name, price: product.price }}
                 className="flex flex-col items-center text-center group cursor-pointer w-[100%] sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.5rem)] max-w-[280px] rounded-xl hover:bg-[#E8E8E8] transition-all duration-300 py-4 px-4"
               >
                 <div className="h-[180px] md:h-[200px] flex items-center justify-center mb-4 overflow-hidden w-full">
-                  <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
+                  <img src={product.image_url} alt={product.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 <h3 className="font-bold text-[#333333] text-[16px] md:text-[17px]">{product.name}</h3>
-                <p className="text-[#555555] mt-1 text-[14px] md:text-[15px]">{product.price}</p>
+                <p className="text-[#555555] mt-1 text-[14px] md:text-[15px]">${product.price.toFixed(2)}</p>
               </Link>
             ))}
           </div>

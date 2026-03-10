@@ -201,6 +201,35 @@ if (productCount.count === 0) {
   console.log(`Seeded ${initialProducts.length} products.`);
 }
 
+// Migration: Add samples if they don't exist
+const samplesExist = db.prepare("SELECT COUNT(*) as count FROM products WHERE category = 'samples'").get() as { count: number };
+if (samplesExist.count === 0) {
+  console.log("Adding sample products...");
+  const insertProduct = db.prepare(`
+    INSERT INTO products (name, description, price, category, image_url, is_active)
+    VALUES (?, ?, ?, ?, ?, 1)
+  `);
+  
+  const samples = [
+    { name: 'Custom sticker samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/BVqzHNZK/custom-sticker-samples.png' },
+    { name: 'Clear sticker samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/gZdxnzHH/clear-sticker-samples.png' },
+    { name: 'Glitter sticker samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/CpgCcQ12/glitter-sticker-samples.png' },
+    { name: 'Holographic sticker samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/X0rM4C3/holographic-sticker-samples.png' },
+    { name: 'Custom magnet samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/chHfMBmQ/magnet-samples.png' },
+    { name: 'Custom label samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/qYnVFRmp/label-samples.png' },
+    { name: 'Clear label samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/Gv9xVDP6/clear-label-samples.png' },
+    { name: 'Custom coaster samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/k60qRLCz/coaster-samples.png' },
+    { name: 'Custom tape sample', category: 'samples', price: 4.00, image: 'https://i.ibb.co.com/pvQgfznX/packaging-tape-sample.png' },
+    { name: 'Custom poly mailer samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/0jdrgjrm/poly-mailer-samples.png' },
+    { name: 'Custom bubble mailer samples', category: 'samples', price: 9.00, image: 'https://i.ibb.co.com/rRWpW2kd/bubble-mailer-samples.png' }
+  ];
+
+  for (const s of samples) {
+    insertProduct.run(s.name, `Custom ${s.name.toLowerCase()}`, s.price, s.category, s.image);
+  }
+  console.log(`Added ${samples.length} sample products.`);
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -341,6 +370,36 @@ async function startServer() {
     }
   });
 
+  app.get("/api/admin/top-products", (req, res) => {
+    try {
+      const topProducts = db.prepare(`
+        SELECT p.name, p.image_url, COUNT(oi.id) as sales
+        FROM products p
+        LEFT JOIN order_items oi ON p.name = oi.name
+        GROUP BY p.id
+        ORDER BY sales DESC
+        LIMIT 5
+      `).all();
+      res.json(topProducts);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  app.get("/api/admin/chart-data", (req, res) => {
+    try {
+      const chartData = db.prepare(`
+        SELECT strftime('%m', created_at) as month, SUM(total_price) as revenue
+        FROM orders
+        GROUP BY month
+        ORDER BY month
+      `).all();
+      res.json(chartData);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   app.get("/api/admin/orders", (req, res) => {
     try {
       const orders = db.prepare(`
@@ -406,6 +465,9 @@ async function startServer() {
   // Products CRUD
   app.get("/api/products", (req, res) => {
     try {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
       const products = db.prepare("SELECT * FROM products ORDER BY created_at DESC").all();
       res.json(products);
     } catch (err: any) {
@@ -429,7 +491,7 @@ async function startServer() {
     const { name, description, price, category, image_url, is_active } = req.body;
     try {
       db.prepare("UPDATE products SET name = ?, description = ?, price = ?, category = ?, image_url = ?, is_active = ? WHERE id = ?")
-        .run(name, description, price, category, image_url, is_active ? 1 : 0, id);
+        .run(name, description, price, category, image_url, is_active ? 1 : 0, Number(id));
       res.json({ success: true });
     } catch (err: any) {
       res.status(500).json({ error: err.message });
@@ -439,7 +501,7 @@ async function startServer() {
   app.delete("/api/admin/products/:id", (req, res) => {
     const { id } = req.params;
     try {
-      db.prepare("DELETE FROM products WHERE id = ?").run(id);
+      db.prepare("DELETE FROM products WHERE id = ?").run(Number(id));
       res.json({ success: true });
     } catch (err: any) {
       res.status(500).json({ error: err.message });

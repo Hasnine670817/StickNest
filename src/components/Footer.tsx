@@ -1,13 +1,50 @@
-import React from 'react';
-import { Instagram, Youtube } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Instagram, Youtube, X, Lock } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function Footer() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   if (['/login', '/signup'].includes(location.pathname)) {
     return null;
   }
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), password: password.trim() }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        if (data.role === 'admin') {
+          login(data);
+          setIsAdminModalOpen(false);
+          navigate('/admin');
+        } else {
+          setError('This account does not have admin privileges');
+        }
+      } else {
+        setError(data.error || 'Invalid admin credentials');
+      }
+    } catch (err) {
+      setError('An error occurred during login');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <footer className="bg-[#f4f4f4] pt-12 md:pt-16 pb-8 md:pb-12 px-4 mt-auto">
@@ -63,6 +100,7 @@ export default function Footer() {
               <li><a href="#" className="hover:underline">Help</a></li>
               <li><a href="#" className="hover:underline">Returns</a></li>
               <li><a href="#" className="hover:underline">Feedback</a></li>
+              <li><button onClick={() => setIsAdminModalOpen(true)} className="hover:underline text-left">Admin Login</button></li>
             </ul>
           </div>
         </div>
@@ -92,6 +130,74 @@ export default function Footer() {
           </div>
         </div>
       </div>
+
+      {/* Admin Login Modal */}
+      {isAdminModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-[#f37021] rounded-lg flex items-center justify-center">
+                  <Lock className="w-4 h-4 text-white" />
+                </div>
+                <h2 className="text-xl font-bold text-[#333333]">Admin Login</h2>
+              </div>
+              <button 
+                onClick={() => setIsAdminModalOpen(false)}
+                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-500" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAdminLogin} className="p-8 space-y-6">
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-100 text-red-600 text-sm font-medium rounded-lg">
+                  {error}
+                </div>
+              )}
+              
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-[#333333]">Email Address</label>
+                <input 
+                  type="email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f37021]/20 focus:border-[#f37021] transition-all"
+                  placeholder="admin@example.com"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-[#333333]">Password</label>
+                <input 
+                  type="password" 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f37021]/20 focus:border-[#f37021] transition-all"
+                  placeholder="••••••••"
+                />
+              </div>
+
+              <button 
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-[#333333] text-white py-3 rounded-lg font-bold hover:bg-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              >
+                {isLoading ? 'Logging in...' : 'Login to Admin Panel'}
+              </button>
+            </form>
+            
+            <div className="px-8 py-4 bg-gray-50 border-t border-gray-100 text-center">
+              <p className="text-xs text-gray-400">
+                Authorized personnel only. All access is logged.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </footer>
   );
 }

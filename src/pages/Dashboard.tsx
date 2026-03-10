@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Package, Clock, CheckCircle, ChevronRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Order {
   id: number;
@@ -12,6 +13,7 @@ interface Order {
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -56,7 +58,7 @@ export default function Dashboard() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="p-6 border-b border-gray-100 flex items-center justify-between">
                 <h2 className="text-xl font-bold text-[#333333]">Recent Orders</h2>
-                <span className="text-sm text-[#0066cc] font-bold cursor-pointer hover:underline">View all</span>
+                <Link to="/all-orders" className="text-sm text-[#0066cc] font-bold cursor-pointer hover:underline">View all</Link>
               </div>
               
               <div className="divide-y divide-gray-100">
@@ -71,8 +73,12 @@ export default function Dashboard() {
                     </button>
                   </div>
                 ) : (
-                  orders.map((order) => (
-                    <div key={order.id} className="p-6 hover:bg-gray-50 transition-colors cursor-pointer group">
+                  orders.slice(0, 5).map((order) => (
+                    <div 
+                      key={order.id} 
+                      onClick={() => navigate(`/order-details/${order.id}`)}
+                      className="p-6 hover:bg-gray-50 transition-colors cursor-pointer group"
+                    >
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -110,15 +116,24 @@ export default function Dashboard() {
           {/* Sidebar - Account Info */}
           <div className="lg:col-span-1 space-y-8">
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-bold text-[#333333] mb-4">Account Details</h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Full Name</label>
-                  <p className="text-[#333333] font-medium">{user?.fullName}</p>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 rounded-full bg-[#f37021] flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
+                  {user?.profileImage ? (
+                    <img src={user.profileImage} alt={user.fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    user?.fullName.charAt(0).toUpperCase()
+                  )}
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email Address</label>
-                  <p className="text-[#333333] font-medium">{user?.email}</p>
+                  <h3 className="font-bold text-[#333333]">{user?.fullName}</h3>
+                  <p className="text-sm text-gray-500">{user?.email}</p>
+                </div>
+              </div>
+              <h3 className="font-bold text-[#333333] mb-4 border-t border-gray-100 pt-4">Account Details</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Account Status</label>
+                  <p className="text-green-600 font-bold">Active</p>
                 </div>
                 <button className="w-full mt-4 text-sm text-[#0066cc] font-bold hover:underline text-left">
                   Edit profile

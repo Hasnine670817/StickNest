@@ -1,27 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Star, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Feature from '../components/Feature';
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image_url: string;
+  is_active: number;
+}
+
 export default function Acrylics() {
-  const productTypes = [
-  {
-    "name": "Acrylic charms",
-    "image": "https://picsum.photos/seed/charm/200/200"
-  },
-  {
-    "name": "Acrylic keychains",
-    "image": "https://picsum.photos/seed/keychain/200/200"
-  },
-  {
-    "name": "Acrylic pins",
-    "image": "https://picsum.photos/seed/pin/200/200"
-  },
-  {
-    "name": "Acrylic stands",
-    "image": "https://picsum.photos/seed/stand/200/200"
-  }
-];
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        const filtered = data.filter((p: Product) => p.category === 'acrylics' && p.is_active === 1);
+        setProducts(filtered);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
   const reviews = [
     {
@@ -101,21 +109,37 @@ export default function Acrylics() {
       {/* Grid Section */}
       <section className="bg-[#f4f4f4] py-16 px-4 sm:px-8">
         <div className="max-w-[1100px] mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-12">
-            {productTypes.map((type, idx) => (
-              <Link 
-                key={idx} 
-                to={`/product/${type.name?.toLowerCase().replace(/\s+/g, '-') || 'product'}`} 
-                state={{ image: type.image, name: type.name }}
-                className="flex flex-col items-center text-center group cursor-pointer rounded-xl py-4 px-4 hover:bg-[#E8E8E8] transition-all duration-300"
-              >
-                <div className="w-full flex items-center justify-center mb-4">
-                  <img src={type.image} alt={type.name} className="w-full object-cover rounded-xl border-[6px] border-white shadow-md group-hover:scale-105 transition-transform duration-300" />
-                </div>
-                <span className="text-[15px] text-[#333333]">{type.name}</span>
-              </Link>
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f37021]"></div>
+            </div>
+          ) : products.length > 0 ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-12">
+              {products.map((product) => (
+                <Link 
+                  key={product.id} 
+                  to={`/product/${product.name?.toLowerCase().replace(/\s+/g, '-') || 'product'}`} 
+                  state={{ image: product.image_url, name: product.name, price: product.price, description: product.description }}
+                  className="flex flex-col items-center text-center group cursor-pointer rounded-xl py-4 px-4 hover:bg-[#E8E8E8] transition-all duration-300"
+                >
+                  <div className="w-full flex items-center justify-center mb-4">
+                    <img 
+                      src={product.image_url || 'https://picsum.photos/seed/placeholder/200/200'} 
+                      alt={product.name} 
+                      className="w-full aspect-square object-cover rounded-xl border-[6px] border-white shadow-md group-hover:scale-105 transition-transform duration-300" 
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+                  <span className="text-[15px] text-[#333333] font-medium">{product.name}</span>
+                  <span className="text-[13px] text-[#f37021] font-bold mt-1">From ${(product.price || 0).toFixed(2)}</span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-gray-500">No acrylics available at the moment.</p>
+            </div>
+          )}
         </div>
       </section>
 

@@ -9,8 +9,13 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { isAuthenticated, user, logout } = useAuth();
   const { cartCount } = useCart();
+
+  const getInitials = (name: string) => {
+    return name.charAt(0).toUpperCase();
+  };
 
   const productCategories = [
     { name: 'Stickers', icon: 'https://i.ibb.co.com/CKJ76LNx/stickres.png', path: '/stickers' },
@@ -77,10 +82,49 @@ export default function Header() {
             )}
           </button>
           {isAuthenticated ? (
-            <>
-              <Link to="/dashboard" className="hidden lg:block hover:text-gray-300 py-4">Dashboard</Link>
-              <button onClick={logout} className="hidden lg:block hover:text-gray-300 py-4">Logout</button>
-            </>
+            <div 
+              className="relative group h-full flex items-center"
+              onMouseEnter={() => setIsUserMenuOpen(true)}
+              onMouseLeave={() => setIsUserMenuOpen(false)}
+            >
+              <button className="flex items-center hover:text-gray-300 py-4 focus:outline-none">
+                <div className="w-8 h-8 rounded-full bg-[#f37021] flex items-center justify-center text-white font-bold text-sm overflow-hidden">
+                  {user?.profileImage ? (
+                    <img src={user.profileImage} alt={user.fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    getInitials(user?.fullName || 'U')
+                  )}
+                </div>
+                <ChevronDown className="w-4 h-4 ml-1" />
+              </button>
+              
+              {/* User Dropdown Menu */}
+              <div className={`absolute top-[100%] right-0 w-[200px] bg-white rounded-lg shadow-[0_10px_40px_rgba(0,0,0,0.2)] text-gray-800 transition-all duration-200 z-50 ${isUserMenuOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}`}>
+                {/* Caret */}
+                <div className="absolute -top-2 right-4 w-4 h-4 bg-white transform rotate-45 shadow-[-2px_-2px_4px_rgba(0,0,0,0.05)]"></div>
+                
+                <div className="py-2 relative bg-white rounded-lg z-10">
+                  <div className="px-5 py-3 border-b border-gray-100">
+                    <p className="text-sm font-bold text-[#333333] truncate">{user?.fullName}</p>
+                    <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                  </div>
+                  {user?.role === 'admin' && (
+                    <Link to="/admin" className="flex items-center px-5 py-2.5 hover:bg-gray-50 transition-colors text-[#f37021] font-bold" onClick={() => setIsUserMenuOpen(false)}>
+                      Admin Dashboard
+                    </Link>
+                  )}
+                  <Link to="/dashboard" className="flex items-center px-5 py-2.5 hover:bg-gray-50 transition-colors text-[#333333] font-normal" onClick={() => setIsUserMenuOpen(false)}>
+                    Dashboard
+                  </Link>
+                  <button 
+                    onClick={() => { logout(); setIsUserMenuOpen(false); }} 
+                    className="w-full text-left flex items-center px-5 py-2.5 hover:bg-gray-50 transition-colors text-[#333333] font-normal"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : (
             <>
               <Link to="/login" className="hidden lg:block hover:text-gray-300 py-4">Log in</Link>
@@ -119,6 +163,22 @@ export default function Header() {
           <div className="h-px bg-white/10 my-2"></div>
           {isAuthenticated ? (
             <>
+              <div className="flex items-center gap-3 py-3 border-b border-white/5 mb-2">
+                <div className="w-10 h-10 rounded-full bg-[#f37021] flex items-center justify-center text-white font-bold overflow-hidden">
+                  {user?.profileImage ? (
+                    <img src={user.profileImage} alt={user.fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    getInitials(user?.fullName || 'U')
+                  )}
+                </div>
+                <div>
+                  <p className="font-bold text-white">{user?.fullName}</p>
+                  <p className="text-xs text-gray-400">{user?.email}</p>
+                </div>
+              </div>
+              {user?.role === 'admin' && (
+                <Link to="/admin" className="py-2 font-bold text-[#f37021]" onClick={() => setIsMobileMenuOpen(false)}>Admin Dashboard</Link>
+              )}
               <Link to="/dashboard" className="py-2 font-bold hover:text-gray-300" onClick={() => setIsMobileMenuOpen(false)}>Dashboard</Link>
               <button onClick={() => { logout(); setIsMobileMenuOpen(false); }} className="py-2 font-bold hover:text-gray-300 text-left">Logout</button>
             </>

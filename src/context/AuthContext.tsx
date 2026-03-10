@@ -4,6 +4,8 @@ interface User {
   id: number;
   email: string;
   fullName: string;
+  profileImage?: string;
+  role: 'user' | 'admin';
 }
 
 interface AuthContextType {

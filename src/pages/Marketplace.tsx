@@ -256,6 +256,7 @@ const popularStores = [
 
 export default function Marketplace() {
   const [activeTab, setActiveTab] = useState("Popular");
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
@@ -288,8 +289,10 @@ export default function Marketplace() {
   );
 
   const handleTabClick = (tab: string) => {
+    setLoading(true);
     setActiveTab(tab);
     setCurrentPage(1); // Reset page when tab changes
+    setTimeout(() => setLoading(false), 300); // Simulate a short loading delay
   };
 
   const handlePageChange = (page: number) => {
@@ -327,10 +330,10 @@ export default function Marketplace() {
             <button
               key={tab}
               onClick={() => handleTabClick(tab)}
-              className={`py-4 text-[15px] ${
+              className={`py-4 text-[15px] border-b-4 ${
                 activeTab === tab
-                  ? "font-bold text-[#333] border-b-4 border-[#ff7a00]"
-                  : "text-gray-500 hover:text-[#333]"
+                  ? "text-[#333] border-[#ff7a00]"
+                  : "text-gray-500 border-transparent hover:text-[#333]"
               }`}
             >
               {tab}
@@ -343,60 +346,67 @@ export default function Marketplace() {
       <div className="max-w-[1280px] mx-auto px-4 sm:px-8 py-8 flex flex-col lg:flex-row gap-8">
         {/* Left Column: Products Grid */}
         <div className="flex-1">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentProducts.map((product) => (
-              <div key={product.id} className="group cursor-pointer">
-                {/* Image Container */}
-                <div className="bg-[#f4f4f4] aspect-[4/3] rounded-md overflow-hidden mb-3 relative">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
-
-                {/* Product Info */}
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2 overflow-hidden">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              {/* Spinner */}
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#ff7a00]"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentProducts.map((product) => (
+                <div key={product.id} className="group cursor-pointer">
+                  {/* Image Container */}
+                  <div className="bg-[#f4f4f4] aspect-[4/3] rounded-md overflow-hidden mb-3 relative">
                     <img
-                      src={product.avatar}
-                      alt={product.author}
-                      className="w-6 h-6 rounded-full shrink-0"
+                      src={product.image}
+                      alt={product.title}
+                      className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                     />
-                    <div className="overflow-hidden">
-                      <h3 className="text-[13px] font-bold text-[#333] truncate leading-tight">
-                        {product.title}
-                      </h3>
-                      <p className="text-[12px] text-gray-500 truncate leading-tight mt-0.5">
-                        {product.author}
-                      </p>
-                    </div>
                   </div>
 
-                  {/* Stats */}
-                  <div className="flex items-center gap-3 shrink-0 ml-2 text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Heart className="w-3.5 h-3.5 fill-current" />
-                      <span className="text-[12px] font-medium">
-                        {product.likes}
-                      </span>
+                  {/* Product Info */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <img
+                        src={product.avatar}
+                        alt={product.author}
+                        className="w-6 h-6 rounded-full shrink-0"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="overflow-hidden">
+                        <h3 className="text-[13px] font-bold text-[#333] truncate leading-tight">
+                          {product.title}
+                        </h3>
+                        <p className="text-[12px] text-gray-500 truncate leading-tight mt-0.5">
+                          {product.author}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <ShoppingCart className="w-3.5 h-3.5 fill-current" />
-                      <span className="text-[12px] font-medium">
-                        {product.cart}
-                      </span>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-3 shrink-0 ml-2 text-gray-400">
+                      <div className="flex items-center gap-1">
+                        <Heart className="w-3.5 h-3.5 fill-current" />
+                        <span className="text-[12px] font-medium">
+                          {product.likes}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <ShoppingCart className="w-3.5 h-3.5 fill-current" />
+                        <span className="text-[12px] font-medium">
+                          {product.cart}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Pagination */}
-          {totalPages > 1 && (
+          {!loading && totalPages > 1 && (
             <div className="mt-12 flex flex-col items-center">
               <div className="flex items-center gap-1 mb-4">
                 <button

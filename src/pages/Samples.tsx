@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Play, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 export default function Samples() {
   const [isPlaying, setIsPlaying] = useState(false);
+  const { addToCart } = useCart();
 
   const products = [
     { name: 'Custom sticker samples', price: '10 for $9', image: 'https://i.ibb.co.com/BVqzHNZK/custom-sticker-samples.png' },
@@ -34,7 +37,17 @@ export default function Samples() {
           <div className="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
             <h1 className="text-3xl md:text-[40px] font-bold text-[#333333] mb-4 leading-tight">Sample pack for $1</h1>
             <p className="text-[#555555] mb-6 text-[16px] md:text-[18px]">Each pack contains stickers, labels, and magnets.<br className="hidden md:block"/>Free shipping</p>
-            <button className="bg-[#0066cc] hover:bg-[#005bb5] text-white font-bold py-3 px-8 rounded text-[16px] md:text-[18px] transition-colors">
+            <button 
+              onClick={() => addToCart({
+                name: 'Sample pack',
+                image: 'https://images.unsplash.com/photo-1572375992501-4b0892d50c69?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80',
+                size: 'Standard',
+                quantity: 1,
+                pricePerUnit: 1,
+                totalPrice: 1
+              })}
+              className="bg-[#0066cc] hover:bg-[#005bb5] text-white font-bold py-3 px-8 rounded text-[16px] md:text-[18px] transition-colors"
+            >
               Add to cart
             </button>
           </div>
@@ -51,13 +64,18 @@ export default function Samples() {
           
           <div className="flex flex-wrap justify-center gap-x-4 md:gap-x-8 gap-y-12">
             {products.map((product, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center group cursor-pointer w-[100%] sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.5rem)] max-w-[280px] rounded-xl hover:bg-[#E8E8E8] transition-all duration-300 py-4 px-4">
+              <Link 
+                key={idx} 
+                to={`/product/${product.name?.toLowerCase().replace(/\s+/g, '-') || 'product'}`} 
+                state={{ image: product.image, name: product.name }}
+                className="flex flex-col items-center text-center group cursor-pointer w-[100%] sm:w-[calc(50%-1rem)] md:w-[calc(33.333%-1.5rem)] max-w-[280px] rounded-xl hover:bg-[#E8E8E8] transition-all duration-300 py-4 px-4"
+              >
                 <div className="h-[180px] md:h-[200px] flex items-center justify-center mb-4 overflow-hidden w-full">
                   <img src={product.image} alt={product.name} className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 <h3 className="font-bold text-[#333333] text-[16px] md:text-[17px]">{product.name}</h3>
                 <p className="text-[#555555] mt-1 text-[14px] md:text-[15px]">{product.price}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

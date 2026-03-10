@@ -106,12 +106,17 @@ export default function Stickers() {
         <div className="max-w-[1100px] mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-12">
             {stickerTypes.map((type, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center group cursor-pointer rounded-xl py-4 px-4 hover:bg-[#E8E8E8] transition-all duration-300">
+              <Link 
+                key={idx} 
+                to={`/product/${type.name?.toLowerCase().replace(/\s+/g, '-') || 'product'}`} 
+                state={{ image: type.image, name: type.name }}
+                className="flex flex-col items-center text-center group cursor-pointer rounded-xl py-4 px-4 hover:bg-[#E8E8E8] transition-all duration-300"
+              >
                 <div className="w-full flex items-center justify-center mb-4">
                   <img src={type.image} alt={type.name} className="w-full object-cover rounded-xl border-[6px] border-white shadow-md group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 <span className="text-[15px] text-[#333333]">{type.name}</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -206,7 +211,7 @@ export default function Stickers() {
       </section>
 
       {/* FAQ Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
+      <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-6">Frequently asked questions</h2>
           
@@ -223,10 +228,10 @@ export default function Stickers() {
             View all FAQs
           </a>
         </div>
-      </section> */}
+      </section>
 
       {/* Related Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
+      <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-10">Related to custom stickers</h2>
           
@@ -236,7 +241,7 @@ export default function Stickers() {
             <a href="#" className="text-[16px] font-bold text-[#333333] hover:underline">Car decals</a>
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }

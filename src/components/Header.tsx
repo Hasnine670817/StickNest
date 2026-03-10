@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Search, ShoppingCart, ChevronDown, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
+  const { cartCount } = useCart();
 
   const productCategories = [
     { name: 'Stickers', icon: 'https://i.ibb.co.com/CKJ76LNx/stickres.png', path: '/stickers' },
@@ -61,7 +63,14 @@ export default function Header() {
         </div>
         <div className="flex items-center space-x-4 lg:space-x-6">
           <a href="#" className="hover:text-gray-300 py-4"><Search className="w-5 h-5" /></a>
-          <a href="#" className="hover:text-gray-300 py-4"><ShoppingCart className="w-5 h-5" /></a>
+          <Link to="/cart" className="hover:text-gray-300 py-4 relative">
+            <ShoppingCart className="w-5 h-5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-2 bg-[#f37021] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                {cartCount}
+              </span>
+            )}
+          </Link>
           {isAuthenticated ? (
             <>
               <Link to="/dashboard" className="hidden lg:block hover:text-gray-300 py-4">Dashboard</Link>

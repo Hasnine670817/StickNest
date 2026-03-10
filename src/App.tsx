@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -18,40 +19,52 @@ import Acrylics from './pages/Acrylics';
 import MoreProducts from './pages/MoreProducts';
 import Deals from './pages/Deals';
 import Marketplace from './pages/Marketplace';
+import ProductDetail from './pages/ProductDetail';
+import UploadArtwork from './pages/UploadArtwork';
+import Checkout from './pages/Checkout';
+import OrderSuccess from './pages/OrderSuccess';
+import Cart from './pages/Cart';
 import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <div className="min-h-screen bg-white font-sans text-gray-800 flex flex-col">
-          <Header />
-          <main className="flex-1 flex flex-col">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/samples" element={<Samples />} />
-              <Route path="/stickers" element={<Stickers />} />
-              <Route path="/labels" element={<Labels />} />
-              <Route path="/magnets" element={<Magnets />} />
-              <Route path="/buttons" element={<Buttons />} />
-              <Route path="/packaging" element={<Packaging />} />
-              <Route path="/apparel" element={<Apparel />} />
-              <Route path="/acrylics" element={<Acrylics />} />
-              <Route path="/more-products" element={<MoreProducts />} />
-              <Route path="/deals" element={<Deals />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              
-              {/* Private Routes */}
-              <Route element={<PrivateRoute />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-              </Route>
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
+      <CartProvider>
+        <Router>
+          <div className="min-h-screen bg-white font-sans text-gray-800 flex flex-col">
+            <Header />
+            <main className="flex-1 flex flex-col">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/samples" element={<Samples />} />
+                <Route path="/stickers" element={<Stickers />} />
+                <Route path="/labels" element={<Labels />} />
+                <Route path="/magnets" element={<Magnets />} />
+                <Route path="/buttons" element={<Buttons />} />
+                <Route path="/packaging" element={<Packaging />} />
+                <Route path="/apparel" element={<Apparel />} />
+                <Route path="/acrylics" element={<Acrylics />} />
+                <Route path="/more-products" element={<MoreProducts />} />
+                <Route path="/deals" element={<Deals />} />
+                <Route path="/marketplace" element={<Marketplace />} />
+                <Route path="/product/:name" element={<ProductDetail />} />
+                <Route path="/upload-artwork" element={<UploadArtwork />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
+                <Route path="/cart" element={<Cart />} />
+                
+                {/* Private Routes */}
+                <Route element={<PrivateRoute />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                </Route>
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </CartProvider>
     </AuthProvider>
   );
 }

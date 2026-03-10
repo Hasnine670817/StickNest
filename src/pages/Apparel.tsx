@@ -106,12 +106,17 @@ export default function Apparel() {
         <div className="max-w-[1100px] mx-auto">
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-12">
             {productTypes.map((type, idx) => (
-              <div key={idx} className="flex flex-col items-center text-center group cursor-pointer rounded-xl py-4 px-4 hover:bg-[#E8E8E8] transition-all duration-300">
+              <Link 
+                key={idx} 
+                to={`/product/${type.name?.toLowerCase().replace(/\s+/g, '-') || 'product'}`} 
+                state={{ image: type.image, name: type.name }}
+                className="flex flex-col items-center text-center group cursor-pointer rounded-xl py-4 px-4 hover:bg-[#E8E8E8] transition-all duration-300"
+              >
                 <div className="w-full flex items-center justify-center mb-4">
                   <img src={type.image} alt={type.name} className="w-full object-cover rounded-xl border-[6px] border-white shadow-md group-hover:scale-105 transition-transform duration-300" />
                 </div>
                 <span className="text-[15px] text-[#333333]">{type.name}</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

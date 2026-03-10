@@ -54,8 +54,8 @@ export default function Header() {
               </div>
             </div>
             <Link to="/samples" className="hover:text-gray-300 py-4">Samples</Link>
-            <a href="#" className="hover:text-gray-300 py-4">Marketplace</a>
-            <a href="#" className="hover:text-gray-300 py-4">Deals</a>
+            <Link to="/marketplace" className="hover:text-gray-300 py-4">Marketplace</Link>
+            <Link to="/deals" className="hover:text-gray-300 py-4">Deals</Link>
             <a href="#" className="border border-white/30 px-3 py-1.5 rounded hover:bg-white/10">Get PRO</a>
           </div>
         </div>
@@ -96,8 +96,8 @@ export default function Header() {
             </div>
           </div>
           <Link to="/samples" className="py-2 font-bold hover:text-gray-300" onClick={() => setIsMobileMenuOpen(false)}>Samples</Link>
-          <a href="#" className="py-2 font-bold hover:text-gray-300">Marketplace</a>
-          <a href="#" className="py-2 font-bold hover:text-gray-300">Deals</a>
+          <Link to="/marketplace" className="py-2 font-bold hover:text-gray-300" onClick={() => setIsMobileMenuOpen(false)}>Marketplace</Link>
+          <Link to="/deals" className="py-2 font-bold hover:text-gray-300" onClick={() => setIsMobileMenuOpen(false)}>Deals</Link>
           <a href="#" className="py-2 font-bold hover:text-gray-300">Get PRO</a>
           <div className="h-px bg-white/10 my-2"></div>
           {isAuthenticated ? (

@@ -81,14 +81,7 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Footer Pill */}
-      // <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black/20 text-white text-[13px] py-2 px-6 rounded flex items-center gap-4 whitespace-nowrap z-10">
-      //   <span>© 2026 Sticker Mule</span>
-      //   <div className="flex gap-3 font-bold">
-      //     <a href="#" className="hover:underline">Privacy & Terms</a>
-      //   </div>
-      //   <a href="#" className="font-bold hover:underline">Site map</a>
-      // </div>
+
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Feature from '../components/Feature';
 
 export default function MoreProducts() {
   const productTypes = [
@@ -117,29 +118,12 @@ export default function MoreProducts() {
       </section>
 
       {/* Feature Section 1 */}
-      <section className="py-16 md:py-24 px-4 bg-white">
-        <div className="max-w-[1000px] mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16">
-          <div className="md:w-1/2 relative w-full">
-            <div className="w-full h-[250px] sm:h-[300px] rounded-lg shadow-md overflow-hidden bg-black flex items-center justify-center">
-              <video 
-                src="https://www.w3schools.com/html/mov_bbb.mp4" 
-                className="w-full h-full object-cover"
-                controls 
-                autoPlay 
-                loop
-                muted
-                playsInline
-              />
-            </div>
-          </div>
-          <div className="md:w-1/2 text-center md:text-left">
-            <h2 className="text-[28px] sm:text-[32px] font-bold mb-4 sm:mb-6 text-[#333333] leading-tight">Free shipping, free online proofs, fast turnaround.</h2>
-            <p className="text-[#555555] text-[15px] sm:text-[16px] leading-[1.6]">
-              More products are the fastest and easiest way to promote your business, product, or event – and Our Store is the easiest way to buy more products. We'll make beautiful vinyl more products from any artwork, logo, or photo. Order your more products in seconds and receive free online proofs, free worldwide shipping and super fast turnaround.
-            </p>
-          </div>
-        </div>
-      </section>
+      <Feature 
+        title="Free shipping, free online proofs, fast turnaround."
+        description="More products are the fastest and easiest way to promote your business, product, or event – and Our Store is the easiest way to buy more products. We'll make beautiful vinyl more products from any artwork, logo, or photo. Order your more products in seconds and receive free online proofs, free worldwide shipping and super fast turnaround."
+        videoSrc="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        imageSrc="https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+      />
 
       {/* Feature Section 2 */}
       <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">

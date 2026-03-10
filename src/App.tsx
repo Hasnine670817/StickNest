@@ -16,6 +16,8 @@ import Packaging from './pages/Packaging';
 import Apparel from './pages/Apparel';
 import Acrylics from './pages/Acrylics';
 import MoreProducts from './pages/MoreProducts';
+import Deals from './pages/Deals';
+import Marketplace from './pages/Marketplace';
 import PrivateRoute from './components/PrivateRoute';
 
 export default function App() {
@@ -38,6 +40,8 @@ export default function App() {
               <Route path="/apparel" element={<Apparel />} />
               <Route path="/acrylics" element={<Acrylics />} />
               <Route path="/more-products" element={<MoreProducts />} />
+              <Route path="/deals" element={<Deals />} />
+              <Route path="/marketplace" element={<Marketplace />} />
               
               {/* Private Routes */}
               <Route element={<PrivateRoute />}>

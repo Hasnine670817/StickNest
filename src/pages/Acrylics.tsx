@@ -5,11 +5,23 @@ import Feature from '../components/Feature';
 
 export default function Acrylics() {
   const productTypes = [
-    { name: 'Acrylic charms', image: 'https://picsum.photos/seed/charm/200/200' },
-    { name: 'Acrylic standees', image: 'https://picsum.photos/seed/standee/200/200' },
-    { name: 'Acrylic keychains', image: 'https://picsum.photos/seed/keychain/200/200' },
-    { name: 'Acrylic pins', image: 'https://picsum.photos/seed/pin/200/200' },
-  ];
+  {
+    "name": "Acrylic charms",
+    "image": "https://picsum.photos/seed/charm/200/200"
+  },
+  {
+    "name": "Acrylic keychains",
+    "image": "https://picsum.photos/seed/keychain/200/200"
+  },
+  {
+    "name": "Acrylic pins",
+    "image": "https://picsum.photos/seed/pin/200/200"
+  },
+  {
+    "name": "Acrylic stands",
+    "image": "https://picsum.photos/seed/stand/200/200"
+  }
+];
 
   const reviews = [
     {
@@ -26,7 +38,7 @@ export default function Acrylics() {
       title: 'Best stickers ever',
       name: 'Amber Lynch',
       time: '13 hours ago',
-      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Sticker mule was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
+      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Our Store was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
     },
     {
       initials: 'MT',
@@ -196,7 +208,7 @@ export default function Acrylics() {
       </section>
 
       {/* FAQ Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
+      <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-6">Frequently asked questions</h2>
           
@@ -213,10 +225,10 @@ export default function Acrylics() {
             View all FAQs
           </a>
         </div>
-      </section> */}
+      </section>
 
       {/* Related Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
+      <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-10">Related to custom acrylics</h2>
           
@@ -226,7 +238,7 @@ export default function Acrylics() {
             <a href="#" className="text-[16px] font-bold text-[#333333] hover:underline">Car decals</a>
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }

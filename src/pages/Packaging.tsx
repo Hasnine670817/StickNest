@@ -5,12 +5,23 @@ import Feature from '../components/Feature';
 
 export default function Packaging() {
   const productTypes = [
-    { name: 'Poly mailers', image: 'https://picsum.photos/seed/poly/200/200' },
-    { name: 'Bubble mailers', image: 'https://picsum.photos/seed/bubble/200/200' },
-    { name: 'Custom tape', image: 'https://picsum.photos/seed/tape/200/200' },
-    { name: 'Custom boxes', image: 'https://picsum.photos/seed/box/200/200' },
-    { name: 'Padded mailers', image: 'https://picsum.photos/seed/padded/200/200' },
-  ];
+  {
+    "name": "Poly mailers",
+    "image": "https://picsum.photos/seed/poly/200/200"
+  },
+  {
+    "name": "Bubble mailers",
+    "image": "https://picsum.photos/seed/bubble/200/200"
+  },
+  {
+    "name": "Custom tape",
+    "image": "https://picsum.photos/seed/tape/200/200"
+  },
+  {
+    "name": "Mailer boxes",
+    "image": "https://picsum.photos/seed/box/200/200"
+  }
+];
 
   const reviews = [
     {
@@ -27,7 +38,7 @@ export default function Packaging() {
       title: 'Best stickers ever',
       name: 'Amber Lynch',
       time: '13 hours ago',
-      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Sticker mule was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
+      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Our Store was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
     },
     {
       initials: 'MT',
@@ -197,7 +208,7 @@ export default function Packaging() {
       </section>
 
       {/* FAQ Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
+      <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-6">Frequently asked questions</h2>
           
@@ -214,10 +225,10 @@ export default function Packaging() {
             View all FAQs
           </a>
         </div>
-      </section> */}
+      </section>
 
       {/* Related Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
+      <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-10">Related to custom packaging</h2>
           
@@ -227,7 +238,7 @@ export default function Packaging() {
             <a href="#" className="text-[16px] font-bold text-[#333333] hover:underline">Car decals</a>
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }

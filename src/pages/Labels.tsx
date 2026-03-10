@@ -5,21 +5,39 @@ import Feature from '../components/Feature';
 
 export default function Labels() {
   const productTypes = [
-    { name: 'Roll labels', image: 'https://picsum.photos/seed/roll/200/200' },
-    { name: 'Sheet labels', image: 'https://picsum.photos/seed/sheet/200/200' },
-    { name: 'Die cut labels', image: 'https://picsum.photos/seed/diecutl/200/200' },
-    { name: 'Circle labels', image: 'https://picsum.photos/seed/circlel/200/200' },
-    { name: 'Rectangle labels', image: 'https://picsum.photos/seed/rectl/200/200' },
-    { name: 'Square labels', image: 'https://picsum.photos/seed/squarel/200/200' },
-    { name: 'Oval labels', image: 'https://picsum.photos/seed/ovall/200/200' },
-    { name: 'Clear labels', image: 'https://picsum.photos/seed/clearl/200/200' },
-    { name: 'Waterproof labels', image: 'https://picsum.photos/seed/waterproof/200/200' },
-    { name: 'Product labels', image: 'https://picsum.photos/seed/productl/200/200' },
-    { name: 'Beverage labels', image: 'https://picsum.photos/seed/beverage/200/200' },
-    { name: 'Food labels', image: 'https://picsum.photos/seed/foodl/200/200' },
-    { name: 'Cosmetic labels', image: 'https://picsum.photos/seed/cosmetic/200/200' },
-    { name: 'Shipping labels', image: 'https://picsum.photos/seed/shipping/200/200' },
-  ];
+  {
+    "name": "Roll labels",
+    "image": "https://picsum.photos/seed/roll/200/200"
+  },
+  {
+    "name": "Sheet labels",
+    "image": "https://picsum.photos/seed/sheet/200/200"
+  },
+  {
+    "name": "Die cut labels",
+    "image": "https://picsum.photos/seed/diecutl/200/200"
+  },
+  {
+    "name": "Circle labels",
+    "image": "https://picsum.photos/seed/circlel/200/200"
+  },
+  {
+    "name": "Rectangle labels",
+    "image": "https://picsum.photos/seed/rectl/200/200"
+  },
+  {
+    "name": "Square labels",
+    "image": "https://picsum.photos/seed/squarel/200/200"
+  },
+  {
+    "name": "Oval labels",
+    "image": "https://picsum.photos/seed/ovall/200/200"
+  },
+  {
+    "name": "Clear labels",
+    "image": "https://picsum.photos/seed/clearl/200/200"
+  }
+];
 
   const reviews = [
     {
@@ -36,7 +54,7 @@ export default function Labels() {
       title: 'Best stickers ever',
       name: 'Amber Lynch',
       time: '13 hours ago',
-      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Sticker mule was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
+      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Our Store was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
     },
     {
       initials: 'MT',
@@ -149,7 +167,7 @@ export default function Labels() {
 
       {/* Reviews Section */}
       <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
-        <div className="max-w-[800px] mx-auto">
+        <div className="max-w-[1000px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-10">Reviews for custom labels</h2>
           
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start text-center mb-12 gap-8 sm:gap-0">

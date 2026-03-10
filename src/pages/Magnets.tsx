@@ -5,14 +5,35 @@ import Feature from '../components/Feature';
 
 export default function Magnets() {
   const productTypes = [
-    { name: 'Car magnets', image: 'https://picsum.photos/seed/carmagnet/200/200' },
-    { name: 'Fridge magnets', image: 'https://picsum.photos/seed/fridgemagnet/200/200' },
-    { name: 'Die cut magnets', image: 'https://picsum.photos/seed/diecutm/200/200' },
-    { name: 'Circle magnets', image: 'https://picsum.photos/seed/circlem/200/200' },
-    { name: 'Rectangle magnets', image: 'https://picsum.photos/seed/rectm/200/200' },
-    { name: 'Square magnets', image: 'https://picsum.photos/seed/squarem/200/200' },
-    { name: 'Oval magnets', image: 'https://picsum.photos/seed/ovalm/200/200' },
-  ];
+  {
+    "name": "Car magnets",
+    "image": "https://picsum.photos/seed/carmag/200/200"
+  },
+  {
+    "name": "Refrigerator magnets",
+    "image": "https://picsum.photos/seed/refmag/200/200"
+  },
+  {
+    "name": "Die cut magnets",
+    "image": "https://picsum.photos/seed/diecutmag/200/200"
+  },
+  {
+    "name": "Circle magnets",
+    "image": "https://picsum.photos/seed/circlemag/200/200"
+  },
+  {
+    "name": "Rectangle magnets",
+    "image": "https://picsum.photos/seed/rectmag/200/200"
+  },
+  {
+    "name": "Square magnets",
+    "image": "https://picsum.photos/seed/squaremag/200/200"
+  },
+  {
+    "name": "Oval magnets",
+    "image": "https://picsum.photos/seed/ovalmag/200/200"
+  }
+];
 
   const reviews = [
     {
@@ -29,7 +50,7 @@ export default function Magnets() {
       title: 'Best stickers ever',
       name: 'Amber Lynch',
       time: '13 hours ago',
-      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Sticker mule was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
+      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Our Store was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
     },
     {
       initials: 'MT',

@@ -33,7 +33,7 @@ export default function Stickers() {
       title: 'Perfect Quality Every Time!',
       name: 'Wendy Daniels',
       time: '3 hours ago',
-      text: 'Sticker Mule never disappoints. I\'ve used them over and over again and they are consistent. The quality is top notch.'
+      text: 'Our Store never disappoints. I\'ve used them over and over again and they are consistent. The quality is top notch.'
     },
     {
       initials: 'AL',
@@ -41,7 +41,7 @@ export default function Stickers() {
       title: 'Best stickers ever',
       name: 'Amber Lynch',
       time: '13 hours ago',
-      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Sticker mule was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
+      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Our Store was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
     },
     {
       initials: 'MT',
@@ -125,7 +125,7 @@ export default function Stickers() {
       {/* Feature Section 1 */}
       <Feature 
         title="Free shipping, free online proofs, fast turnaround."
-        description="Custom stickers are the fastest and easiest way to promote your business, product, or event – and Sticker Mule is the easiest way to buy custom stickers. We'll make beautiful vinyl custom stickers from any artwork, logo, or photo. Order your custom stickers in seconds and receive free online proofs, free worldwide shipping and super fast turnaround."
+        description="Custom stickers are the fastest and easiest way to promote your business, product, or event – and Our Store is the easiest way to buy custom stickers. We'll make beautiful vinyl custom stickers from any artwork, logo, or photo. Order your custom stickers in seconds and receive free online proofs, free worldwide shipping and super fast turnaround."
         videoSrc="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
         imageSrc="https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
       />

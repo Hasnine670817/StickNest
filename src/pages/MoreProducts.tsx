@@ -5,26 +5,23 @@ import Feature from '../components/Feature';
 
 export default function MoreProducts() {
   const productTypes = [
-    { name: 'Die cut stickers', image: 'https://picsum.photos/seed/diecut/200/200' },
-    { name: 'Circle stickers', image: 'https://picsum.photos/seed/circle/200/200' },
-    { name: 'Rectangle stickers', image: 'https://picsum.photos/seed/rect/200/200' },
-    { name: 'Square stickers', image: 'https://picsum.photos/seed/square/200/200' },
-    { name: 'Oval stickers', image: 'https://picsum.photos/seed/oval/200/200' },
-    { name: 'Bumper stickers', image: 'https://picsum.photos/seed/bumper/200/200' },
-    { name: 'Sticker sheets', image: 'https://picsum.photos/seed/sheets/200/200' },
-    { name: 'Kiss cut stickers', image: 'https://picsum.photos/seed/kiss/200/200' },
-    { name: 'Rounded corner stickers', image: 'https://picsum.photos/seed/rounded/200/200' },
-    { name: 'Clear stickers', image: 'https://picsum.photos/seed/clear/200/200' },
-    { name: 'Transfer stickers', image: 'https://picsum.photos/seed/transfer/200/200' },
-    { name: 'Vinyl lettering', image: 'https://picsum.photos/seed/vinyl/200/200' },
-    { name: 'Window clings', image: 'https://picsum.photos/seed/window/200/200' },
-    { name: 'Front adhesive stickers', image: 'https://picsum.photos/seed/front/200/200' },
-    { name: 'Holographic stickers', image: 'https://picsum.photos/seed/holo/200/200' },
-    { name: 'Glitter stickers', image: 'https://picsum.photos/seed/glitter/200/200' },
-    { name: 'Fabric stickers', image: 'https://picsum.photos/seed/fabric/200/200' },
-    { name: 'Economy stickers', image: 'https://picsum.photos/seed/eco/200/200' },
-    { name: 'Sticker packs', image: 'https://picsum.photos/seed/packs/200/200' },
-  ];
+  {
+    "name": "Custom coasters",
+    "image": "https://picsum.photos/seed/coaster/200/200"
+  },
+  {
+    "name": "Custom puzzles",
+    "image": "https://picsum.photos/seed/puzzle/200/200"
+  },
+  {
+    "name": "Custom mousepads",
+    "image": "https://picsum.photos/seed/mousepad/200/200"
+  },
+  {
+    "name": "Custom wall graphics",
+    "image": "https://picsum.photos/seed/wall/200/200"
+  }
+];
 
   const reviews = [
     {
@@ -41,7 +38,7 @@ export default function MoreProducts() {
       title: 'Best stickers ever',
       name: 'Amber Lynch',
       time: '13 hours ago',
-      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Sticker mule was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
+      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Our Store was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
     },
     {
       initials: 'MT',
@@ -154,7 +151,7 @@ export default function MoreProducts() {
 
       {/* Reviews Section */}
       <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
-        <div className="max-w-[800px] mx-auto">
+        <div className="max-w-[1000px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-10">Reviews for more products</h2>
           
           <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start text-center mb-12 gap-8 sm:gap-0">
@@ -211,7 +208,7 @@ export default function MoreProducts() {
       </section>
 
       {/* FAQ Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
+      <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-6">Frequently asked questions</h2>
           
@@ -228,10 +225,10 @@ export default function MoreProducts() {
             View all FAQs
           </a>
         </div>
-      </section> */}
+      </section>
 
       {/* Related Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
+      <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-10">Related to more products</h2>
           
@@ -241,7 +238,7 @@ export default function MoreProducts() {
             <a href="#" className="text-[16px] font-bold text-[#333333] hover:underline">Car decals</a>
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }

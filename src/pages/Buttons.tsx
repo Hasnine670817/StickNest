@@ -5,11 +5,23 @@ import Feature from '../components/Feature';
 
 export default function Buttons() {
   const productTypes = [
-    { name: 'Round buttons', image: 'https://picsum.photos/seed/roundb/200/200' },
-    { name: 'Square buttons', image: 'https://picsum.photos/seed/squareb/200/200' },
-    { name: 'Rectangle buttons', image: 'https://picsum.photos/seed/rectb/200/200' },
-    { name: 'Oval buttons', image: 'https://picsum.photos/seed/ovalb/200/200' },
-  ];
+  {
+    "name": "Round buttons",
+    "image": "https://picsum.photos/seed/roundbtn/200/200"
+  },
+  {
+    "name": "Square buttons",
+    "image": "https://picsum.photos/seed/squarebtn/200/200"
+  },
+  {
+    "name": "Oval buttons",
+    "image": "https://picsum.photos/seed/ovalbtn/200/200"
+  },
+  {
+    "name": "Rectangle buttons",
+    "image": "https://picsum.photos/seed/rectbtn/200/200"
+  }
+];
 
   const reviews = [
     {
@@ -26,7 +38,7 @@ export default function Buttons() {
       title: 'Best stickers ever',
       name: 'Amber Lynch',
       time: '13 hours ago',
-      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Sticker mule was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
+      text: 'I ordered 3 sticker packs from 3 different companies at the same time. Our Store was the cheapest, fastest delivery, and over all best quality. I have ordered from them multiple times and have never been let down, they will be my go to.'
     },
     {
       initials: 'MT',
@@ -196,7 +208,7 @@ export default function Buttons() {
       </section>
 
       {/* FAQ Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
+      <section className="py-20 px-4 sm:px-8 bg-white border-t border-gray-100">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-6">Frequently asked questions</h2>
           
@@ -213,10 +225,10 @@ export default function Buttons() {
             View all FAQs
           </a>
         </div>
-      </section> */}
+      </section>
 
       {/* Related Section */}
-      {/* <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
+      <section className="py-20 px-4 sm:px-8 bg-[#f4f4f4] text-center">
         <div className="max-w-[800px] mx-auto">
           <h2 className="text-[28px] font-bold text-[#333333] mb-10">Related to custom buttons</h2>
           
@@ -226,7 +238,7 @@ export default function Buttons() {
             <a href="#" className="text-[16px] font-bold text-[#333333] hover:underline">Car decals</a>
           </div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }

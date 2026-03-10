@@ -91,6 +91,23 @@ async function startServer() {
     }
   });
 
+  app.get("/api/orders/:userId", (req, res) => {
+    const { userId } = req.params;
+    try {
+      const orders = db.prepare(`
+        SELECT o.*, GROUP_CONCAT(oi.name || ' (x' || oi.quantity || ')') as items_summary
+        FROM orders o
+        LEFT JOIN order_items oi ON o.id = oi.order_id
+        WHERE o.user_id = ?
+        GROUP BY o.id
+        ORDER BY o.created_at DESC
+      `).all(userId);
+      res.json(orders);
+    } catch (err: any) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

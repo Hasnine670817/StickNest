@@ -7,11 +7,30 @@ export default function Signup() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    login();
-    navigate('/dashboard');
+    setError('');
+    try {
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, fullName }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        login(data);
+        navigate('/dashboard');
+      } else {
+        setError(data.error || 'Signup failed');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
+    }
   };
 
   return (
@@ -34,11 +53,15 @@ export default function Signup() {
             <div className="flex-1 border-t border-gray-200"></div>
           </div>
 
+          {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm font-medium">{error}</div>}
+
           <form onSubmit={handleSignup}>
             <div className="mb-4">
               <label className="block text-[14px] font-bold text-gray-800 mb-1.5">Name</label>
               <input 
                 type="text" 
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                 placeholder="Name"
                 required
@@ -49,6 +72,8 @@ export default function Signup() {
               <label className="block text-[14px] font-bold text-gray-800 mb-1.5">Email</label>
               <input 
                 type="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full border border-gray-300 rounded px-3 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                 placeholder="Email"
                 required
@@ -60,6 +85,8 @@ export default function Signup() {
               <div className="relative">
                 <input 
                   type={showPassword ? "text" : "password"} 
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full border border-gray-300 rounded px-3 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors pr-10"
                   placeholder="Password (6 characters minimum)"
                   required

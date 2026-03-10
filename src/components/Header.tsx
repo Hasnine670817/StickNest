@@ -3,10 +3,12 @@ import { Search, ShoppingCart, ChevronDown, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import CartDrawer from './CartDrawer';
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(false);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const { cartCount } = useCart();
 
@@ -63,14 +65,17 @@ export default function Header() {
         </div>
         <div className="flex items-center space-x-4 lg:space-x-6">
           <a href="#" className="hover:text-gray-300 py-4"><Search className="w-5 h-5" /></a>
-          <Link to="/cart" className="hover:text-gray-300 py-4 relative">
+          <button 
+            onClick={() => setIsCartDrawerOpen(true)}
+            className="hover:text-gray-300 py-4 relative cursor-pointer"
+          >
             <ShoppingCart className="w-5 h-5" />
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-2 bg-[#f37021] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
                 {cartCount}
               </span>
             )}
-          </Link>
+          </button>
           {isAuthenticated ? (
             <>
               <Link to="/dashboard" className="hidden lg:block hover:text-gray-300 py-4">Dashboard</Link>
@@ -87,6 +92,9 @@ export default function Header() {
           </button>
         </div>
       </nav>
+
+      {/* Cart Drawer */}
+      <CartDrawer isOpen={isCartDrawerOpen} onClose={() => setIsCartDrawerOpen(false)} />
 
       {/* Mobile Menu */}
       <div className={`lg:hidden bg-[#333333] text-white absolute w-full z-40 transition-all duration-300 ease-in-out overflow-y-auto ${isMobileMenuOpen ? 'max-h-[calc(100vh-60px)] opacity-100 visible border-t border-white/10' : 'max-h-0 opacity-0 invisible'}`}>

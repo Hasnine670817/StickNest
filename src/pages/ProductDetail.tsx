@@ -53,7 +53,6 @@ export default function ProductDetail() {
   const totalPrice = selectedQuantity.price * currentPriceFactor;
 
   const handleContinue = () => {
-    addToCart();
     navigate('/upload-artwork', {
       state: {
         product: { name: title, image },

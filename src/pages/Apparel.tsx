@@ -5,25 +5,10 @@ import Feature from '../components/Feature';
 
 export default function Apparel() {
   const productTypes = [
-    { name: 'Die cut stickers', image: 'https://picsum.photos/seed/diecut/200/200' },
-    { name: 'Circle stickers', image: 'https://picsum.photos/seed/circle/200/200' },
-    { name: 'Rectangle stickers', image: 'https://picsum.photos/seed/rect/200/200' },
-    { name: 'Square stickers', image: 'https://picsum.photos/seed/square/200/200' },
-    { name: 'Oval stickers', image: 'https://picsum.photos/seed/oval/200/200' },
-    { name: 'Bumper stickers', image: 'https://picsum.photos/seed/bumper/200/200' },
-    { name: 'Sticker sheets', image: 'https://picsum.photos/seed/sheets/200/200' },
-    { name: 'Kiss cut stickers', image: 'https://picsum.photos/seed/kiss/200/200' },
-    { name: 'Rounded corner stickers', image: 'https://picsum.photos/seed/rounded/200/200' },
-    { name: 'Clear stickers', image: 'https://picsum.photos/seed/clear/200/200' },
-    { name: 'Transfer stickers', image: 'https://picsum.photos/seed/transfer/200/200' },
-    { name: 'Vinyl lettering', image: 'https://picsum.photos/seed/vinyl/200/200' },
-    { name: 'Window clings', image: 'https://picsum.photos/seed/window/200/200' },
-    { name: 'Front adhesive stickers', image: 'https://picsum.photos/seed/front/200/200' },
-    { name: 'Holographic stickers', image: 'https://picsum.photos/seed/holo/200/200' },
-    { name: 'Glitter stickers', image: 'https://picsum.photos/seed/glitter/200/200' },
-    { name: 'Fabric stickers', image: 'https://picsum.photos/seed/fabric/200/200' },
-    { name: 'Economy stickers', image: 'https://picsum.photos/seed/eco/200/200' },
-    { name: 'Sticker packs', image: 'https://picsum.photos/seed/packs/200/200' },
+    { name: 'T-shirts', image: 'https://picsum.photos/seed/tshirt/200/200' },
+    { name: 'Hoodies', image: 'https://picsum.photos/seed/hoodie/200/200' },
+    { name: 'Sweatshirts', image: 'https://picsum.photos/seed/sweatshirt/200/200' },
+    { name: 'Tank tops', image: 'https://picsum.photos/seed/tanktop/200/200' },
   ];
 
   const reviews = [

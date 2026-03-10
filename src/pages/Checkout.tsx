@@ -1,21 +1,51 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { Lock, Info, ChevronDown } from 'lucide-react';
 
 export default function Checkout() {
   const navigate = useNavigate();
   const { cartItems, clearCart } = useCart();
+  const { user } = useAuth();
+  const [email, setEmail] = useState(user?.email || '');
+  const [fullName, setFullName] = useState(user?.fullName || '');
+  const [address, setAddress] = useState('');
+  const [zip, setZip] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'paypal' | 'credit-card'>('credit-card');
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.totalPrice, 0);
   const discount = cartItems.length > 1 ? subtotal * 0.1 : 0;
   const total = subtotal - discount;
 
-  const handlePlaceOrder = () => {
-    // In a real app, this would send data to a server
-    clearCart();
-    navigate('/order-success');
+  const isFormValid = email.includes('@') && fullName.trim() !== '' && address.trim() !== '' && zip.trim() !== '';
+
+  const handlePlaceOrder = async () => {
+    if (!isFormValid) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user?.id || null,
+          items: cartItems,
+          totalPrice: total
+        }),
+      });
+
+      if (response.ok) {
+        clearCart();
+        navigate('/order-success');
+      } else {
+        alert('Failed to place order. Please try again.');
+      }
+    } catch (err) {
+      alert('An error occurred. Please try again.');
+    }
   };
 
   return (
@@ -51,6 +81,8 @@ export default function Checkout() {
                   </label>
                   <input 
                     type="email" 
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full h-[44px] border border-gray-300 rounded px-3 focus:outline-none focus:ring-1 focus:ring-[#f37021]"
                   />
                 </div>
@@ -81,6 +113,8 @@ export default function Checkout() {
                   </label>
                   <input 
                     type="text" 
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
                     className="w-full h-[44px] border border-gray-300 rounded px-3 focus:outline-none focus:ring-1 focus:ring-[#f37021]"
                   />
                 </div>
@@ -100,6 +134,8 @@ export default function Checkout() {
                   <div className="space-y-2">
                     <input 
                       type="text" 
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
                       className="w-full h-[44px] border border-gray-300 rounded px-3 focus:outline-none focus:ring-1 focus:ring-[#f37021]"
                     />
                     <input 
@@ -115,6 +151,8 @@ export default function Checkout() {
                     </label>
                     <input 
                       type="text" 
+                      value={zip}
+                      onChange={(e) => setZip(e.target.value)}
                       className="w-full h-[44px] border border-gray-300 rounded px-3 focus:outline-none focus:ring-1 focus:ring-[#f37021]"
                     />
                   </div>
@@ -246,7 +284,11 @@ export default function Checkout() {
             {/* Place Order Button */}
             <button 
               onClick={handlePlaceOrder}
-              className="w-full bg-[#a5c7f9] text-white h-[64px] rounded font-bold text-[20px] hover:bg-[#94b8eb] transition-colors mb-6 shadow-sm"
+              className={`w-full h-[64px] rounded font-bold text-[20px] transition-colors mb-6 shadow-sm ${
+                isFormValid 
+                  ? 'bg-[#f37021] hover:bg-[#e0661e] text-white' 
+                  : 'bg-[#a5c7f9] text-white cursor-not-allowed'
+              }`}
             >
               Place your order
             </button>

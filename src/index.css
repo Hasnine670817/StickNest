@@ -8,6 +8,10 @@
   button {
     @apply cursor-pointer
   }
+
+  select:focus {
+    @apply !ring-0 !outline-0
+  }
 }
 
 /* Custom Scrollbar for Admin Panel */

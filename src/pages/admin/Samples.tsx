@@ -32,7 +32,14 @@ export default function Samples() {
   const fetchSamples = () => {
     fetch('/api/admin/samples')
       .then(res => res.json())
-      .then(data => setSamples(data))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setSamples(data);
+        } else {
+          console.error('Expected array of samples, got:', data);
+          setSamples([]);
+        }
+      })
       .catch(err => console.error(err));
   };
 
@@ -109,34 +116,34 @@ export default function Samples() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">
-                        {sample.customer_name.charAt(0)}
+                        {(sample.customer_name || '?').charAt(0)}
                       </div>
-                      <span className="text-sm font-semibold text-gray-900">{sample.customer_name}</span>
+                      <span className="text-sm font-semibold text-gray-900">{sample.customer_name || 'Unknown'}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-start gap-2 max-w-[200px]">
                       <MapPin className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
-                      <span className="text-xs text-gray-600 line-clamp-2">{sample.address}</span>
+                      <span className="text-xs text-gray-600 line-clamp-2">{sample.address || 'No address provided'}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <Package className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-900">{sample.product_name}</span>
+                      <span className="text-sm text-gray-900">{sample.product_name || 'Unknown Product'}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                       sample.status === 'pending' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
                     }`}>
-                      {sample.status}
+                      {sample.status || 'pending'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Clock className="w-4 h-4 text-gray-400" />
-                      {new Date(sample.created_at).toLocaleDateString()}
+                      {new Date(sample.created_at || 0).toLocaleDateString()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">

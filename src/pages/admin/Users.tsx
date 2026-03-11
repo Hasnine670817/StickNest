@@ -28,15 +28,36 @@ interface UserData {
 export default function Users() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('All Roles');
+  const [statusFilter, setStatusFilter] = useState('All Statuses');
+  const [sortBy, setSortBy] = useState('Newest First');
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as Element).closest('.dropdown-container')) {
+        setOpenDropdownId(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   const fetchUsers = () => {
     fetch('/api/admin/users')
       .then(res => res.json())
-      .then(data => setUsers(data))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setUsers(data);
+        } else {
+          console.error('Expected array of users, got:', data);
+          setUsers([]);
+        }
+      })
       .catch(err => console.error(err));
   };
 
@@ -63,13 +84,29 @@ export default function Users() {
     }
   };
 
-  const filteredUsers = users.filter(user => 
-    user.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = users.filter(user => {
+    const matchesSearch = 
+      (user.full_name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (user.email?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (user.id?.toString() || '').includes(searchTerm);
+      
+    const matchesRole = roleFilter === 'All Roles' || (user.role?.toLowerCase() || '') === roleFilter.toLowerCase();
+    
+    let matchesStatus = true;
+    if (statusFilter === 'Active') matchesStatus = user.is_blocked === 0;
+    if (statusFilter === 'Blocked') matchesStatus = user.is_blocked === 1;
+    
+    return matchesSearch && matchesRole && matchesStatus;
+  }).sort((a, b) => {
+    if (sortBy === 'Newest First') return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+    if (sortBy === 'Oldest First') return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
+    if (sortBy === 'Most Orders') return (b.total_orders || 0) - (a.total_orders || 0);
+    if (sortBy === 'Least Orders') return (a.total_orders || 0) - (b.total_orders || 0);
+    return 0;
+  });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Users Management</h1>
@@ -98,27 +135,41 @@ export default function Users() {
             className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#f37021] outline-none"
           />
         </div>
-        <div className="flex gap-2 overflow-x-auto">
-          <select className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]">
+        <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+          <select 
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]"
+          >
             <option>All Roles</option>
             <option>Admin</option>
             <option>User</option>
           </select>
-          <select className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]">
+          <select 
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]"
+          >
             <option>All Statuses</option>
             <option>Active</option>
             <option>Blocked</option>
           </select>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 whitespace-nowrap">
-            <Filter className="w-4 h-4" />
-            Filters
-          </button>
+          <select 
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]"
+          >
+            <option>Newest First</option>
+            <option>Oldest First</option>
+            <option>Most Orders</option>
+            <option>Least Orders</option>
+          </select>
         </div>
       </div>
 
       {/* Users Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible">
+        <div className="overflow-x-auto min-h-[400px]">
           <table className="w-full text-left">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -135,20 +186,20 @@ export default function Users() {
               {filteredUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-gray-50 transition-colors group">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-bold text-gray-900">#{user.id.toString().padStart(4, '0')}</span>
+                    <span className="text-sm font-bold text-gray-900">#{(user.id || 0).toString().padStart(4, '0')}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
                         {user.profile_image ? (
-                          <img src={user.profile_image} alt={user.full_name} className="w-full h-full object-cover" />
+                          <img src={user.profile_image} alt={user.full_name || 'User'} className="w-full h-full object-cover" />
                         ) : (
                           <User className="w-5 h-5 text-gray-400" />
                         )}
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-gray-900">{user.full_name}</p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
+                        <p className="text-sm font-bold text-gray-900">{user.full_name || 'Unknown User'}</p>
+                        <p className="text-xs text-gray-500">{user.email || 'No email'}</p>
                       </div>
                     </div>
                   </td>
@@ -156,13 +207,13 @@ export default function Users() {
                     <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                       user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'
                     }`}>
-                      {user.role}
+                      {user.role || 'user'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <ShoppingBag className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm font-semibold text-gray-900">{user.total_orders}</span>
+                      <span className="text-sm font-semibold text-gray-900">{user.total_orders || 0}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -175,30 +226,43 @@ export default function Users() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="w-4 h-4 text-gray-400" />
-                      {new Date(user.created_at).toLocaleDateString()}
+                      {new Date(user.created_at || 0).toLocaleDateString()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="relative dropdown-container inline-block">
                       <button 
-                        onClick={() => toggleBlock(user.id, user.is_blocked)}
-                        title={user.is_blocked ? 'Unblock User' : 'Block User'}
-                        className={`p-2 rounded-lg transition-colors ${
-                          user.is_blocked ? 'text-green-600 hover:bg-green-50' : 'text-orange-600 hover:bg-orange-50'
-                        }`}
+                        onClick={() => setOpenDropdownId(openDropdownId === user.id ? null : user.id)}
+                        className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
                       >
-                        {user.is_blocked ? <UserCheck className="w-4 h-4" /> : <UserX className="w-4 h-4" />}
+                        <MoreVertical className="w-5 h-5" />
                       </button>
-                      <button 
-                        onClick={() => deleteUser(user.id)}
-                        title="Delete User"
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg">
-                        <MoreVertical className="w-4 h-4" />
-                      </button>
+                      
+                      {openDropdownId === user.id && (
+                        <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden text-left">
+                          <div className="py-1">
+                            <button 
+                              onClick={() => { toggleBlock(user.id, user.is_blocked); setOpenDropdownId(null); }}
+                              className={`w-full px-4 py-2 text-sm flex items-center gap-2 ${
+                                user.is_blocked ? 'text-green-600 hover:bg-green-50' : 'text-orange-600 hover:bg-orange-50'
+                              }`}
+                            >
+                              {user.is_blocked ? (
+                                <><UserCheck className="w-4 h-4" /> Unblock User</>
+                              ) : (
+                                <><UserX className="w-4 h-4" /> Block User</>
+                              )}
+                            </button>
+                            <div className="h-px bg-gray-100 my-1"></div>
+                            <button 
+                              onClick={() => { deleteUser(user.id); setOpenDropdownId(null); }}
+                              className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                            >
+                              <Trash2 className="w-4 h-4" /> Delete User
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </td>
                 </tr>

@@ -55,20 +55,34 @@ export default function Dashboard() {
   useEffect(() => {
     fetch('/api/admin/stats')
       .then(res => res.json())
-      .then(data => setStats(data))
+      .then(data => {
+        if (!data.error) setStats(data);
+      })
       .catch(err => console.error(err));
 
     fetch('/api/admin/orders')
       .then(res => res.json())
-      .then(data => setRecentOrders(data.slice(0, 5)))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setRecentOrders(data.slice(0, 5));
+        } else {
+          console.error('Expected array of orders, got:', data);
+        }
+      })
       .catch(err => console.error(err));
 
     fetch('/api/admin/chart-data')
       .then(res => res.json())
-      .then(data => setChartData(data.map((d: any) => ({
-        name: new Date(2026, parseInt(d.month) - 1).toLocaleString('default', { month: 'short' }),
-        revenue: d.revenue
-      }))))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setChartData(data.map((d: any) => ({
+            name: new Date(2026, parseInt(d.month) - 1).toLocaleString('default', { month: 'short' }),
+            revenue: d.revenue
+          })));
+        } else {
+          console.error('Expected array of chart data, got:', data);
+        }
+      })
       .catch(err => console.error(err));
   }, []);
 
@@ -83,7 +97,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
           title="Total Revenue" 
-          value={`$${stats.totalSales.toLocaleString()}`} 
+          value={`$${(stats.totalSales || 0).toLocaleString()}`} 
           change="+12.5%" 
           isPositive={true} 
           icon={TrendingUp} 
@@ -91,7 +105,7 @@ export default function Dashboard() {
         />
         <StatCard 
           title="Total Orders" 
-          value={stats.totalOrders.toString()} 
+          value={(stats.totalOrders || 0).toString()} 
           change="+8.2%" 
           isPositive={true} 
           icon={ShoppingCart} 
@@ -99,7 +113,7 @@ export default function Dashboard() {
         />
         <StatCard 
           title="Total Users" 
-          value={stats.totalUsers.toString()} 
+          value={(stats.totalUsers || 0).toString()} 
           change="+5.1%" 
           isPositive={true} 
           icon={Users} 
@@ -107,7 +121,7 @@ export default function Dashboard() {
         />
         <StatCard 
           title="Pending Orders" 
-          value={stats.pendingOrders.toString()} 
+          value={(stats.pendingOrders || 0).toString()} 
           change="-2.4%" 
           isPositive={false} 
           icon={Clock} 
@@ -166,16 +180,15 @@ export default function Dashboard() {
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Amount</th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
                 <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {recentOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">#ORD-{order.id}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">{order.customer_name}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600 truncate max-w-[200px]">{order.items_summary}</td>
-                  <td className="px-6 py-4 text-sm font-semibold text-gray-900">${(order.total_amount || 0).toFixed(2)}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{order.customer_name || 'Unknown'}</td>
+                  <td className="px-6 py-4 text-sm text-gray-600 truncate max-w-[200px]">{order.items_summary || 'No items'}</td>
+                  <td className="px-6 py-4 text-sm font-semibold text-gray-900">${(order.total_price || 0).toFixed(2)}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
                       order.status === 'Delivered' ? 'bg-green-100 text-green-700' :
@@ -183,15 +196,10 @@ export default function Dashboard() {
                       order.status === 'Processing' ? 'bg-yellow-100 text-yellow-700' :
                       'bg-gray-100 text-gray-700'
                     }`}>
-                      {order.status}
+                      {order.status || 'Pending'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">{new Date(order.created_at).toLocaleDateString()}</td>
-                  <td className="px-6 py-4 text-right">
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <MoreVertical className="w-4 h-4 text-gray-400" />
-                    </button>
-                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-500">{new Date(order.created_at || 0).toLocaleDateString()}</td>
                 </tr>
               ))}
             </tbody>

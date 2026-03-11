@@ -60,13 +60,20 @@ export default function Products() {
   const fetchProducts = () => {
     fetch('/api/products')
       .then(res => res.json())
-      .then(data => setProducts(data))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          console.error('Expected array of products, got:', data);
+          setProducts([]);
+        }
+      })
       .catch(err => console.error(err));
   };
 
   const filteredProducts = products.filter(p => {
     const matchesCategory = activeCategory === 'all' || p.category === activeCategory;
-    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    const matchesSearch = (p.name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) || 
                           (p.description && p.description.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
@@ -208,16 +215,16 @@ export default function Products() {
                   </div>
                   <div className="absolute bottom-3 left-3">
                     <span className="px-2 py-1 bg-white/90 backdrop-blur-sm rounded text-[10px] font-bold uppercase tracking-wider text-gray-700 shadow-sm">
-                      {product.category}
+                      {product.category || 'Uncategorized'}
                     </span>
                   </div>
                 </div>
                 <div className="p-4 flex flex-col flex-grow">
                   <div className="flex justify-between items-start mb-1">
-                    <h3 className="font-bold text-gray-900 truncate pr-2" title={product.name}>{product.name}</h3>
+                    <h3 className="font-bold text-gray-900 truncate pr-2" title={product.name || 'Unnamed Product'}>{product.name || 'Unnamed Product'}</h3>
                     <span className="text-[#f37021] font-bold">${(product.price || 0).toFixed(2)}</span>
                   </div>
-                  <p className="text-xs text-gray-500 line-clamp-2 mb-4 flex-grow">{product.description}</p>
+                  <p className="text-xs text-gray-500 line-clamp-2 mb-4 flex-grow">{product.description || 'No description available'}</p>
                   <div className="flex items-center justify-end pt-4 border-t border-gray-100">
                     <div className="flex gap-2">
                       <button 
@@ -277,14 +284,14 @@ export default function Products() {
                           )}
                         </div>
                         <div>
-                          <div className="font-bold text-gray-900">{product.name}</div>
-                          <div className="text-xs text-gray-500 truncate max-w-[200px] sm:max-w-[300px]">{product.description}</div>
+                          <div className="font-bold text-gray-900">{product.name || 'Unnamed Product'}</div>
+                          <div className="text-xs text-gray-500 truncate max-w-[200px] sm:max-w-[300px]">{product.description || 'No description available'}</div>
                         </div>
                       </div>
                     </td>
                     <td className="p-4">
                       <span className="px-2.5 py-1 bg-gray-100 rounded-md text-xs font-medium text-gray-600 uppercase tracking-wider">
-                        {product.category}
+                        {product.category || 'Uncategorized'}
                       </span>
                     </td>
                     <td className="p-4 font-medium text-gray-900">

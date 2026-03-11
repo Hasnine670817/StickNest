@@ -34,7 +34,14 @@ export default function Artworks() {
   const fetchArtworks = () => {
     fetch('/api/admin/artworks')
       .then(res => res.json())
-      .then(data => setArtworks(data))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setArtworks(data);
+        } else {
+          console.error('Expected array of artworks, got:', data);
+          setArtworks([]);
+        }
+      })
       .catch(err => console.error(err));
   };
 
@@ -89,7 +96,7 @@ export default function Artworks() {
         {artworks.map((artwork) => (
           <div key={artwork.id} className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden group hover:border-[#f37021] transition-all">
             <div className="aspect-square relative bg-gray-100 flex items-center justify-center overflow-hidden">
-              {artwork.file_type.startsWith('image') ? (
+              {(artwork.file_type || '').startsWith('image') ? (
                 <img 
                   src={artwork.file_url} 
                   alt="Artwork" 
@@ -99,7 +106,7 @@ export default function Artworks() {
               ) : (
                 <div className="flex flex-col items-center gap-2 text-gray-400">
                   <FileText className="w-16 h-16" />
-                  <span className="text-xs font-bold uppercase">{artwork.file_type.split('/')[1] || 'FILE'}</span>
+                  <span className="text-xs font-bold uppercase">{(artwork.file_type || '').split('/')[1] || 'FILE'}</span>
                 </div>
               )}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
@@ -123,19 +130,19 @@ export default function Artworks() {
                   artwork.status === 'approved' ? 'bg-green-100 text-green-700 border-green-200' :
                   'bg-red-100 text-red-700 border-red-200'
                 }`}>
-                  {artwork.status}
+                  {artwork.status || 'pending'}
                 </span>
               </div>
             </div>
             <div className="p-4">
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold text-xs">
-                  {artwork.user_name.charAt(0)}
+                  {(artwork.user_name || '?').charAt(0)}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-gray-900 truncate">{artwork.user_name}</p>
+                  <p className="text-sm font-bold text-gray-900 truncate">{artwork.user_name || 'Unknown'}</p>
                   <p className="text-[10px] text-gray-500 flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {new Date(artwork.created_at).toLocaleDateString()}
+                    <Clock className="w-3 h-3" /> {new Date(artwork.created_at || 0).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -167,7 +174,7 @@ export default function Artworks() {
             <XCircle className="w-10 h-10" />
           </button>
           <div className="max-w-4xl w-full h-full flex flex-col items-center justify-center" onClick={e => e.stopPropagation()}>
-            {selectedArtwork.file_type.startsWith('image') ? (
+            {(selectedArtwork.file_type || '').startsWith('image') ? (
               <img src={selectedArtwork.file_url} alt="Preview" className="max-w-full max-h-full object-contain" />
             ) : (
               <div className="bg-white p-12 rounded-2xl flex flex-col items-center gap-4">
@@ -181,15 +188,15 @@ export default function Artworks() {
             <div className="mt-8 bg-white/10 backdrop-blur-md p-4 rounded-2xl flex items-center gap-8 text-white">
               <div>
                 <p className="text-xs text-gray-400 uppercase font-bold tracking-widest mb-1">Customer</p>
-                <p className="font-bold">{selectedArtwork.user_name}</p>
+                <p className="font-bold">{selectedArtwork.user_name || 'Unknown'}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-400 uppercase font-bold tracking-widest mb-1">File Type</p>
-                <p className="font-bold">{selectedArtwork.file_type.split('/')[1].toUpperCase()}</p>
+                <p className="font-bold">{(selectedArtwork.file_type || '').split('/')[1]?.toUpperCase() || 'FILE'}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-400 uppercase font-bold tracking-widest mb-1">Uploaded On</p>
-                <p className="font-bold">{new Date(selectedArtwork.created_at).toLocaleDateString()}</p>
+                <p className="font-bold">{new Date(selectedArtwork.created_at || 0).toLocaleDateString()}</p>
               </div>
             </div>
           </div>

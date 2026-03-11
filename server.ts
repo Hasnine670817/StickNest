@@ -109,6 +109,9 @@ const usersTableInfo = db.prepare("PRAGMA table_info(users)").all() as any[];
 if (!usersTableInfo.some(col => col.name === 'is_blocked')) {
   db.exec("ALTER TABLE users ADD COLUMN is_blocked INTEGER DEFAULT 0");
 }
+if (!usersTableInfo.some(col => col.name === 'created_at')) {
+  db.exec("ALTER TABLE users ADD COLUMN created_at DATETIME DEFAULT CURRENT_TIMESTAMP");
+}
 
 // Seed products if empty
 const productCount = db.prepare("SELECT COUNT(*) as count FROM products").get() as { count: number };
@@ -242,10 +245,14 @@ async function startServer() {
     const adminEmail = 'hasnine4010@gmail.com';
     const adminPass = '123456';
     
-    // Force recreate admin to be absolutely sure
-    db.prepare("DELETE FROM users WHERE LOWER(email) = LOWER(?)").run(adminEmail);
-    db.prepare("INSERT INTO users (email, password, full_name, role) VALUES (?, ?, ?, ?)").run(adminEmail, adminPass, 'Admin Hasnine', 'admin');
-    console.log('Admin user seeded: hasnine4010@gmail.com / 123456');
+    const existingAdmin = db.prepare("SELECT * FROM users WHERE LOWER(email) = LOWER(?)").get(adminEmail);
+    if (existingAdmin) {
+      db.prepare("UPDATE users SET password = ?, full_name = ?, role = ? WHERE LOWER(email) = LOWER(?)").run(adminPass, 'Admin Hasnine', 'admin', adminEmail);
+      console.log('Admin user updated: hasnine4010@gmail.com / 123456');
+    } else {
+      db.prepare("INSERT INTO users (email, password, full_name, role) VALUES (?, ?, ?, ?)").run(adminEmail, adminPass, 'Admin Hasnine', 'admin');
+      console.log('Admin user seeded: hasnine4010@gmail.com / 123456');
+    }
   } catch (err) {
     console.error('Failed to seed admin user:', err);
   }
@@ -455,7 +462,12 @@ async function startServer() {
   app.delete("/api/admin/users/:userId", (req, res) => {
     const { userId } = req.params;
     try {
-      db.prepare("DELETE FROM users WHERE id = ?").run(userId);
+      db.transaction(() => {
+        db.prepare("DELETE FROM order_items WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)").run(userId);
+        db.prepare("DELETE FROM orders WHERE user_id = ?").run(userId);
+        db.prepare("DELETE FROM artwork_uploads WHERE user_id = ?").run(userId);
+        db.prepare("DELETE FROM users WHERE id = ?").run(userId);
+      })();
       res.json({ success: true });
     } catch (err: any) {
       res.status(500).json({ error: err.message });

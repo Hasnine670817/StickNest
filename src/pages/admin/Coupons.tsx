@@ -39,7 +39,14 @@ export default function Coupons() {
   const fetchCoupons = () => {
     fetch('/api/admin/coupons')
       .then(res => res.json())
-      .then(data => setCoupons(data))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setCoupons(data);
+        } else {
+          console.error('Expected array of coupons, got:', data);
+          setCoupons([]);
+        }
+      })
       .catch(err => console.error(err));
   };
 
@@ -126,7 +133,7 @@ export default function Coupons() {
               <p className="text-sm font-medium text-gray-500">Average Discount</p>
               <h3 className="text-2xl font-bold text-gray-900">
                 {coupons.length > 0 
-                  ? (coupons.reduce((acc, c) => acc + c.discount_percentage, 0) / coupons.length).toFixed(1) 
+                  ? (coupons.reduce((acc, c) => acc + (c.discount_percentage || 0), 0) / coupons.length).toFixed(1) 
                   : 0}%
               </h3>
             </div>
@@ -182,16 +189,16 @@ export default function Coupons() {
                       <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-orange-600">
                         <Ticket className="w-5 h-5" />
                       </div>
-                      <span className="text-sm font-bold text-gray-900 font-mono tracking-wider">{coupon.code}</span>
+                      <span className="text-sm font-bold text-gray-900 font-mono tracking-wider">{coupon.code || 'UNKNOWN'}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-bold text-gray-900">{coupon.discount_percentage}% OFF</span>
+                    <span className="text-sm font-bold text-gray-900">{coupon.discount_percentage || 0}% OFF</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="w-4 h-4 text-gray-400" />
-                      {new Date(coupon.expiry_date).toLocaleDateString()}
+                      {new Date(coupon.expiry_date || 0).toLocaleDateString()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

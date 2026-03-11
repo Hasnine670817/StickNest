@@ -31,15 +31,37 @@ export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All Statuses');
+  const [dateRange, setDateRange] = useState('All Time');
+  const [sortBy, setSortBy] = useState('Newest First');
+  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (!(e.target as Element).closest('.dropdown-container')) {
+        setOpenDropdownId(null);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
   const fetchOrders = () => {
     fetch('/api/admin/orders')
       .then(res => res.json())
-      .then(data => setOrders(data))
+      .then(data => {
+        if (Array.isArray(data)) {
+          setOrders(data);
+        } else {
+          console.error('Expected array of orders, got:', data);
+          setOrders([]);
+        }
+      })
       .catch(err => console.error(err));
   };
 
@@ -68,21 +90,41 @@ export default function Orders() {
     }
   };
 
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = 
+      (order.id?.toString() || '').includes(searchQuery) ||
+      (order.customer_name?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+      (order.customer_email?.toLowerCase() || '').includes(searchQuery.toLowerCase());
+      
+    const matchesStatus = statusFilter === 'All Statuses' || (order.status?.toLowerCase() || '') === statusFilter.toLowerCase();
+    
+    let matchesDate = true;
+    if (dateRange !== 'All Time') {
+      const orderDate = new Date(order.created_at || 0);
+      const now = new Date();
+      const diffTime = Math.abs(now.getTime() - orderDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (dateRange === 'Last 7 Days') matchesDate = diffDays <= 7;
+      if (dateRange === 'Last 30 Days') matchesDate = diffDays <= 30;
+      if (dateRange === 'This Year') matchesDate = orderDate.getFullYear() === now.getFullYear();
+    }
+    
+    return matchesSearch && matchesStatus && matchesDate;
+  }).sort((a, b) => {
+    if (sortBy === 'Newest First') return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
+    if (sortBy === 'Oldest First') return new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime();
+    if (sortBy === 'Highest Amount') return (b.total_price || 0) - (a.total_price || 0);
+    if (sortBy === 'Lowest Amount') return (a.total_price || 0) - (b.total_price || 0);
+    return 0;
+  });
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Orders Management</h1>
           <p className="text-sm text-gray-500 mt-1">Track and manage customer orders and fulfillment</p>
-        </div>
-        <div className="flex gap-2">
-          <button className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
-            <Printer className="w-4 h-4" />
-            Print Batch
-          </button>
-          <button className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2">
-            Export CSV
-          </button>
         </div>
       </div>
 
@@ -93,11 +135,17 @@ export default function Orders() {
           <input 
             type="text" 
             placeholder="Search by Order ID, Customer Name or Email..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-[#f37021] outline-none"
           />
         </div>
         <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0">
-          <select className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]">
+          <select 
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]"
+          >
             <option>All Statuses</option>
             <option>Pending</option>
             <option>Approved</option>
@@ -106,20 +154,32 @@ export default function Orders() {
             <option>Delivered</option>
             <option>Cancelled</option>
           </select>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 whitespace-nowrap">
-            <Calendar className="w-4 h-4" />
-            Date Range
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 whitespace-nowrap">
-            <Filter className="w-4 h-4" />
-            More Filters
-          </button>
+          <select 
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value)}
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]"
+          >
+            <option>All Time</option>
+            <option>Last 7 Days</option>
+            <option>Last 30 Days</option>
+            <option>This Year</option>
+          </select>
+          <select 
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="bg-white border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-[#f37021]"
+          >
+            <option>Newest First</option>
+            <option>Oldest First</option>
+            <option>Highest Amount</option>
+            <option>Lowest Amount</option>
+          </select>
         </div>
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-visible">
+        <div className="overflow-x-auto min-h-[400px]">
           <table className="w-full text-left">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
@@ -133,7 +193,7 @@ export default function Orders() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <tr key={order.id} className="hover:bg-gray-50 transition-colors group">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm font-bold text-gray-900">#ORD-{order.id}</span>
@@ -141,69 +201,75 @@ export default function Orders() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">
-                        {order.customer_name.charAt(0)}
+                        {(order.customer_name || '?').charAt(0)}
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">{order.customer_name}</p>
-                        <p className="text-xs text-gray-500">{order.customer_email}</p>
+                        <p className="text-sm font-semibold text-gray-900">{order.customer_name || 'Unknown'}</p>
+                        <p className="text-xs text-gray-500">{order.customer_email || 'No email'}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-sm text-gray-600 line-clamp-1 max-w-[200px]">{order.items_summary}</p>
+                    <p className="text-sm text-gray-600 line-clamp-1 max-w-[200px]">{order.items_summary || 'No items'}</p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-bold text-gray-900">${order.total_price.toFixed(2)}</span>
+                    <span className="text-sm font-bold text-gray-900">${(order.total_price || 0).toFixed(2)}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(order.status)}`}>
-                      {order.status}
+                    <span className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(order.status || 'pending')}`}>
+                      {order.status || 'pending'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <p className="text-sm text-gray-600">{new Date(order.created_at).toLocaleDateString()}</p>
-                    <p className="text-[10px] text-gray-400">{new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    <p className="text-sm text-gray-600">{new Date(order.created_at || 0).toLocaleDateString()}</p>
+                    <p className="text-[10px] text-gray-400">{new Date(order.created_at || 0).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="relative dropdown-container inline-block">
                       <button 
-                        onClick={() => updateStatus(order.id, 'approved')}
-                        title="Approve"
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        onClick={() => setOpenDropdownId(openDropdownId === order.id ? null : order.id)}
+                        className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
                       >
-                        <CheckCircle className="w-4 h-4" />
+                        <MoreVertical className="w-5 h-5" />
                       </button>
-                      <button 
-                        onClick={() => updateStatus(order.id, 'printing')}
-                        title="Mark as Printing"
-                        className="p-2 text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                      >
-                        <Printer className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => updateStatus(order.id, 'shipped')}
-                        title="Mark as Shipped"
-                        className="p-2 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-                      >
-                        <Truck className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => updateStatus(order.id, 'delivered')}
-                        title="Mark as Delivered"
-                        className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                      >
-                        <Package className="w-4 h-4" />
-                      </button>
-                      <div className="relative group/menu">
-                        <button className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg">
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
-                        <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-gray-100 hidden group-hover/menu:block z-10 overflow-hidden">
-                          <button onClick={() => updateStatus(order.id, 'cancelled')} className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
-                            <XCircle className="w-4 h-4" /> Cancel Order
-                          </button>
+                      
+                      {openDropdownId === order.id && (
+                        <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden text-left">
+                          <div className="py-1">
+                            <button 
+                              onClick={() => { updateStatus(order.id, 'approved'); setOpenDropdownId(null); }}
+                              className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                            >
+                              <CheckCircle className="w-4 h-4 text-blue-500" /> Mark as Approved
+                            </button>
+                            <button 
+                              onClick={() => { updateStatus(order.id, 'printing'); setOpenDropdownId(null); }}
+                              className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                            >
+                              <Printer className="w-4 h-4 text-purple-500" /> Mark as Printing
+                            </button>
+                            <button 
+                              onClick={() => { updateStatus(order.id, 'shipped'); setOpenDropdownId(null); }}
+                              className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                            >
+                              <Truck className="w-4 h-4 text-indigo-500" /> Mark as Shipped
+                            </button>
+                            <button 
+                              onClick={() => { updateStatus(order.id, 'delivered'); setOpenDropdownId(null); }}
+                              className="w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                            >
+                              <Package className="w-4 h-4 text-green-500" /> Mark as Delivered
+                            </button>
+                            <div className="h-px bg-gray-100 my-1"></div>
+                            <button 
+                              onClick={() => { updateStatus(order.id, 'cancelled'); setOpenDropdownId(null); }}
+                              className="w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                            >
+                              <XCircle className="w-4 h-4" /> Cancel Order
+                            </button>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -211,7 +277,7 @@ export default function Orders() {
             </tbody>
           </table>
         </div>
-        {orders.length === 0 && (
+        {filteredOrders.length === 0 && (
           <div className="p-12 text-center">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <ShoppingCart className="w-8 h-8 text-gray-300" />
